@@ -6,9 +6,6 @@
 <title>Grandes Manutenções · Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ══════════════════════════════════════
-   TOKENS
-══════════════════════════════════════ */
 :root {
   --bg:        #f2f1ee;
   --paper:     #fdfcfa;
@@ -66,6 +63,67 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
 
 /* ══════════════════════════════════════
+   TOOLTIP CUSTOMIZADO (data-tip)
+══════════════════════════════════════ */
+[data-tip] { position: relative; }
+
+[data-tip]::before {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
+  background: rgba(24, 23, 20, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #f0ece4;
+  padding: 7px 13px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .2s ease, transform .2s ease;
+  z-index: 999;
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 8px 24px rgba(0,0,0,.25);
+}
+[data-tip]::after {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
+  border: 5px solid transparent;
+  border-top-color: rgba(24, 23, 20, 0.82);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .2s ease, transform .2s ease;
+  z-index: 999;
+}
+[data-tip]:hover::before,
+[data-tip]:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* KPI com filtro ativo */
+.kpi.filter-active {
+  border-color: var(--warn) !important;
+  box-shadow: 0 0 0 3px var(--warn-br);
+}
+.kpi.filter-active .kpi-sub::after {
+  content: ' · filtro ativo';
+  color: var(--warn);
+  font-weight: 700;
+}
+
+/* ══════════════════════════════════════
    HEADER
 ══════════════════════════════════════ */
 .header {
@@ -80,13 +138,7 @@ body {
   z-index: 100;
   transition: background .3s, border-color .3s;
 }
-.logo {
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: -.3px;
-  color: var(--text);
-  white-space: nowrap;
-}
+.logo { font-size: 15px; font-weight: 700; letter-spacing: -.3px; color: var(--text); white-space: nowrap; }
 .logo em { font-style: normal; color: var(--accent); }
 .header-sep { width: 1px; height: 20px; background: var(--border2); flex-shrink: 0; }
 .header-sub { font-size: 12px; color: var(--sub); }
@@ -107,185 +159,84 @@ body {
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.35} }
 
 .btn-sm {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--sub);
-  border-radius: 8px;
-  padding: 5px 12px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  cursor: pointer;
-  transition: all .18s;
+  background: transparent; border: 1px solid var(--border); color: var(--sub);
+  border-radius: 8px; padding: 5px 12px;
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  cursor: pointer; transition: all .18s;
 }
 .btn-sm:hover { color: var(--text); border-color: var(--border2); }
 
-/* theme toggle */
 .theme-btn {
-  width: 46px; height: 25px;
-  background: var(--border2);
-  border-radius: 13px;
-  border: none;
-  cursor: pointer;
-  position: relative;
-  transition: background .3s;
-  flex-shrink: 0;
+  width: 46px; height: 25px; background: var(--border2); border-radius: 13px;
+  border: none; cursor: pointer; position: relative; transition: background .3s; flex-shrink: 0;
 }
 .theme-knob {
-  position: absolute;
-  top: 3px; left: 3px;
-  width: 19px; height: 19px;
-  border-radius: 50%;
-  background: var(--paper);
-  box-shadow: 0 1px 4px rgba(0,0,0,.2);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 10px;
+  position: absolute; top: 3px; left: 3px; width: 19px; height: 19px; border-radius: 50%;
+  background: var(--paper); box-shadow: 0 1px 4px rgba(0,0,0,.2);
+  display: flex; align-items: center; justify-content: center; font-size: 10px;
   transition: transform .3s cubic-bezier(.4,0,.2,1);
 }
 .dark .theme-btn { background: var(--accent); }
 .dark .theme-knob { transform: translateX(21px); }
-
 #clock { font-size: 11px; color: var(--sub); font-family: 'JetBrains Mono', monospace; }
 
 /* ══════════════════════════════════════
    LAYOUT
 ══════════════════════════════════════ */
-.layout {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  min-height: calc(100vh - 53px);
-}
+.layout { display: grid; grid-template-columns: 240px 1fr; min-height: calc(100vh - 53px); }
 
 /* ══════════════════════════════════════
    SIDEBAR
 ══════════════════════════════════════ */
 .sidebar {
-  background: var(--paper);
-  border-right: 1px solid var(--border);
-  padding: 24px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  position: sticky;
-  top: 53px;
-  height: calc(100vh - 53px);
-  overflow-y: auto;
-  transition: background .3s, border-color .3s;
+  background: var(--paper); border-right: 1px solid var(--border);
+  padding: 24px 16px; display: flex; flex-direction: column; gap: 4px;
+  position: sticky; top: 53px; height: calc(100vh - 53px);
+  overflow-y: auto; transition: background .3s, border-color .3s;
 }
 .sidebar-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--sub);
-  padding: 0 4px;
-  margin-bottom: 10px;
+  font-size: 10px; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--sub); padding: 0 4px; margin-bottom: 10px;
 }
-
-/* ── Busca de equipamentos ── */
-.sidebar-search {
-  position: relative;
-  margin-bottom: 12px;
-}
+.sidebar-search { position: relative; margin-bottom: 12px; }
 .sidebar-search input {
-  width: 100%;
-  background: var(--bg);
-  border: 1.5px solid var(--border);
-  color: var(--text);
-  border-radius: 10px;
-  padding: 8px 12px 8px 34px;
-  font-family: 'Outfit', sans-serif;
-  font-size: 12.5px;
-  font-weight: 400;
-  outline: none;
-  transition: border-color .2s, box-shadow .2s, background .3s;
-  line-height: 1.4;
+  width: 100%; background: var(--bg); border: 1.5px solid var(--border); color: var(--text);
+  border-radius: 10px; padding: 8px 12px 8px 34px; font-family: 'Outfit', sans-serif;
+  font-size: 12.5px; font-weight: 400; outline: none;
+  transition: border-color .2s, box-shadow .2s, background .3s; line-height: 1.4;
 }
-.sidebar-search input::placeholder {
-  color: var(--sub);
-  font-weight: 400;
-}
-.sidebar-search input:focus {
-  border-color: var(--accent);
-  background: var(--paper);
-  box-shadow: 0 0 0 3px var(--accent-br);
-}
+.sidebar-search input::placeholder { color: var(--sub); font-weight: 400; }
+.sidebar-search input:focus { border-color: var(--accent); background: var(--paper); box-shadow: 0 0 0 3px var(--accent-br); }
 .sidebar-search-icon {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 14px;
-  height: 14px;
-  pointer-events: none;
-  opacity: .55;
-  /* SVG lupa inline ao invés de emoji */
+  position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  width: 14px; height: 14px; pointer-events: none; opacity: .55;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2378746a' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='16.5' y1='16.5' x2='22' y2='22'/%3E%3C/svg%3E");
-  background-size: contain;
-  background-repeat: no-repeat;
+  background-size: contain; background-repeat: no-repeat;
 }
 .sidebar-search-clear {
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--border2);
-  border: none;
-  color: var(--sub);
-  font-size: 11px;
-  line-height: 1;
-  cursor: pointer;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  transition: background .15s, color .15s;
-  padding: 0;
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  width: 18px; height: 18px; border-radius: 50%; background: var(--border2);
+  border: none; color: var(--sub); font-size: 11px; line-height: 1; cursor: pointer;
+  display: none; align-items: center; justify-content: center;
+  transition: background .15s, color .15s; padding: 0;
 }
 .sidebar-search-clear:hover { background: var(--accent); color: #fff; }
 .sidebar-search.has-value .sidebar-search-clear { display: flex; }
 .sidebar-search.has-value input { padding-right: 30px; }
-
-/* ── Separador ── */
-.sidebar-sep {
-  height: 1px;
-  background: var(--border);
-  margin: 4px 0 10px;
-}
+.sidebar-sep { height: 1px; background: var(--border); margin: 4px 0 10px; }
 
 .equip-btn {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--text);
-  font-family: 'Outfit', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  text-align: left;
-  cursor: pointer;
-  transition: all .16s;
-  width: 100%;
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+  border-radius: 10px; border: 1px solid transparent; background: transparent;
+  color: var(--text); font-family: 'Outfit', sans-serif; font-size: 13px;
+  font-weight: 500; text-align: left; cursor: pointer; transition: all .16s; width: 100%;
 }
 .equip-btn:hover { background: var(--bg); border-color: var(--border); }
-.equip-btn.active {
-  background: var(--accent-bg);
-  border-color: var(--accent-br);
-  color: var(--accent);
-}
+.equip-btn.active { background: var(--accent-bg); border-color: var(--accent-br); color: var(--accent); }
 .equip-icon {
-  width: 32px; height: 32px;
-  border-radius: 8px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 15px;
-  flex-shrink: 0;
-  transition: all .16s;
+  width: 32px; height: 32px; border-radius: 8px; background: var(--bg);
+  border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
+  font-size: 15px; flex-shrink: 0; transition: all .16s;
 }
 .equip-btn.active .equip-icon { background: var(--accent-bg); border-color: var(--accent-br); }
 .equip-meta { flex: 1; min-width: 0; }
@@ -293,221 +244,83 @@ body {
 .equip-ct { font-size: 11px; color: var(--sub); margin-top: 1px; }
 .equip-btn.active .equip-ct { color: var(--accent); opacity: .75; }
 
-/* ── Card Última GM Executada ── */
+/* ── Card Última GM ── */
 .ultima-gm-card {
-  background: var(--paper);
-  border: 1px solid var(--accent-br);
-  border-radius: var(--radius);
-  padding: 20px 24px;
-  display: flex;
-  align-items: center;
-  gap: 20px;
+  background: var(--paper); border: 1px solid var(--accent-br); border-radius: var(--radius);
+  padding: 20px 24px; display: flex; align-items: center; gap: 20px;
   transition: border-color .18s, transform .18s, background .3s;
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
+  position: relative; overflow: hidden; cursor: pointer;
 }
-.ultima-gm-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: var(--accent);
-}
+.ultima-gm-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); }
 .ultima-gm-card:hover { border-color: var(--accent); transform: translateY(-2px); }
 .ultima-gm-icon {
-  width: 52px; height: 52px;
-  border-radius: 12px;
-  background: var(--accent-bg);
-  border: 1px solid var(--accent-br);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 22px;
-  flex-shrink: 0;
+  width: 52px; height: 52px; border-radius: 12px; background: var(--accent-bg);
+  border: 1px solid var(--accent-br); display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
 }
 .ultima-gm-info { flex: 1; min-width: 0; }
-.ultima-gm-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--sub);
-  margin-bottom: 4px;
-}
-.ultima-gm-tipo {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--accent);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.ultima-gm-meta {
-  display: flex;
-  gap: 16px;
-  margin-top: 6px;
-  flex-wrap: wrap;
-}
-.ultima-gm-meta span {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  color: var(--sub);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
+.ultima-gm-label { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--sub); margin-bottom: 4px; }
+.ultima-gm-tipo { font-size: 15px; font-weight: 700; color: var(--accent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ultima-gm-meta { display: flex; gap: 16px; margin-top: 6px; flex-wrap: wrap; }
+.ultima-gm-meta span { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--sub); display: flex; align-items: center; gap: 4px; }
 .ultima-gm-meta .hi { color: var(--accent); font-weight: 600; }
 .ultima-gm-badge {
-  flex-shrink: 0;
-  background: var(--accent-bg);
-  color: var(--accent);
-  border: 1px solid var(--accent-br);
-  border-radius: 20px;
-  padding: 4px 12px;
-  font-size: 11px;
-  font-weight: 600;
-  font-family: 'JetBrains Mono', monospace;
-  white-space: nowrap;
+  flex-shrink: 0; background: var(--accent-bg); color: var(--accent);
+  border: 1px solid var(--accent-br); border-radius: 20px; padding: 4px 12px;
+  font-size: 11px; font-weight: 600; font-family: 'JetBrains Mono', monospace; white-space: nowrap;
 }
 
 /* ══════════════════════════════════════
-   MAIN CONTENT
+   MAIN
 ══════════════════════════════════════ */
-.main {
-  padding: 32px 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-  min-width: 0;
-}
+.main { padding: 32px 40px; display: flex; flex-direction: column; gap: 28px; min-width: 0; }
 
-/* ── Equipamento header ── */
-.equip-header {
-  display: flex;
-  align-items: flex-start;
-  gap: 18px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid var(--border);
-}
+.equip-header { display: flex; align-items: flex-start; gap: 18px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
 .equip-header-icon {
-  width: 56px; height: 56px;
-  border-radius: 14px;
-  background: var(--accent-bg);
-  border: 1px solid var(--accent-br);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 26px;
-  flex-shrink: 0;
+  width: 56px; height: 56px; border-radius: 14px; background: var(--accent-bg);
+  border: 1px solid var(--accent-br); display: flex; align-items: center; justify-content: center;
+  font-size: 26px; flex-shrink: 0;
 }
-.equip-header-info h1 {
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: -.4px;
-  line-height: 1.15;
-  font-family: 'JetBrains Mono', monospace;
-}
+.equip-header-info h1 { font-size: 22px; font-weight: 700; letter-spacing: -.4px; line-height: 1.15; font-family: 'JetBrains Mono', monospace; }
 .equip-header-info p { font-size: 13px; color: var(--sub); margin-top: 4px; }
 
 /* ── KPIs ── */
-.kpis {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 12px;
-}
+.kpis { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
 .kpi {
-  background: var(--paper);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px 20px;
-  position: relative;
-  overflow: hidden;
-  transition: border-color .18s, transform .18s, background .3s;
+  background: var(--paper); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px 20px; position: relative; overflow: hidden;
+  transition: border-color .18s, transform .18s, background .3s, box-shadow .18s;
 }
-.kpi::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: var(--kpi-color, var(--accent));
-}
+.kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--kpi-color, var(--accent)); }
 .kpi:hover { border-color: var(--kpi-color, var(--accent)); transform: translateY(-2px); }
-.kpi-label {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  color: var(--sub);
-  margin-bottom: 10px;
-  font-weight: 600;
-}
-.kpi-value {
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 600;
-  font-size: 28px;
-  color: var(--kpi-color, var(--text));
-  line-height: 1;
-}
+.kpi-label { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--sub); margin-bottom: 10px; font-weight: 600; }
+.kpi-value { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 28px; color: var(--kpi-color, var(--text)); line-height: 1; }
 .kpi-sub { font-size: 11px; color: var(--sub); margin-top: 6px; }
 
-/* ── Filtros inline ── */
+/* ── Filtros ── */
 .filters-row {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-wrap: wrap;
-  padding: 14px 16px;
-  background: var(--paper);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  transition: background .3s;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  padding: 14px 16px; background: var(--paper); border: 1px solid var(--border);
+  border-radius: var(--radius); transition: background .3s;
 }
-.filters-row label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--sub);
-  white-space: nowrap;
+.filters-row label { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--sub); white-space: nowrap; }
+.filters-row select, .filters-row input[type="date"] {
+  background: var(--bg); border: 1px solid var(--border); color: var(--text);
+  border-radius: 8px; padding: 6px 10px; font-family: 'Outfit', sans-serif;
+  font-size: 12px; cursor: pointer; outline: none; transition: border-color .18s, background .3s, color .3s;
 }
-.filters-row select,
-.filters-row input[type="date"] {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  color: var(--text);
-  border-radius: 8px;
-  padding: 6px 10px;
-  font-family: 'Outfit', sans-serif;
-  font-size: 12px;
-  cursor: pointer;
-  outline: none;
-  transition: border-color .18s, background .3s, color .3s;
-}
-.filters-row select:focus,
-.filters-row input:focus { border-color: var(--accent); }
+.filters-row select:focus, .filters-row input:focus { border-color: var(--accent); }
 .filters-row select option { background: var(--paper); }
 .filter-sep { width: 1px; height: 20px; background: var(--border); }
 .btn-accent {
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 7px 16px;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 600;
-  font-size: 12px;
-  cursor: pointer;
-  transition: opacity .18s;
-  white-space: nowrap;
+  background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 7px 16px;
+  font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 12px; cursor: pointer; transition: opacity .18s; white-space: nowrap;
 }
 .btn-accent:hover { opacity: .85; }
 .btn-ghost {
-  background: transparent;
-  color: var(--sub);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 7px 14px;
-  font-family: 'Outfit', sans-serif;
-  font-size: 12px;
-  cursor: pointer;
-  transition: color .18s, border-color .18s;
-  white-space: nowrap;
+  background: transparent; color: var(--sub); border: 1px solid var(--border); border-radius: 8px;
+  padding: 7px 14px; font-family: 'Outfit', sans-serif; font-size: 12px; cursor: pointer;
+  transition: color .18s, border-color .18s; white-space: nowrap;
 }
 .btn-ghost:hover { color: var(--text); border-color: var(--border2); }
 
@@ -515,383 +328,131 @@ body {
    TIMELINE
 ══════════════════════════════════════ */
 .tl-section-title {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--sub);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
+  font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--sub); display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
 }
-.tl-section-title::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-
+.tl-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 .tl-group { margin-bottom: 36px; }
+.tl-item { display: grid; grid-template-columns: 110px 20px 1fr; gap: 0 18px; margin-bottom: 4px; }
 
-.tl-item {
-  display: grid;
-  grid-template-columns: 110px 20px 1fr;
-  gap: 0 18px;
-  margin-bottom: 4px;
-}
+.tl-date { text-align: right; padding-top: 20px; padding-bottom: 20px; }
+.tl-date-day { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 600; line-height: 1; color: var(--text); }
+.tl-date-rest { font-size: 11px; color: var(--sub); margin-top: 3px; text-transform: uppercase; letter-spacing: .05em; line-height: 1.4; }
 
-/* coluna data */
-.tl-date {
-  text-align: right;
-  padding-top: 20px;
-  padding-bottom: 20px;
-}
-.tl-date-day {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 22px;
-  font-weight: 600;
-  line-height: 1;
-  color: var(--text);
-}
-.tl-date-rest {
-  font-size: 11px;
-  color: var(--sub);
-  margin-top: 3px;
-  text-transform: uppercase;
-  letter-spacing: .05em;
-  line-height: 1.4;
-}
-
-/* coluna linha */
-.tl-spine {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+.tl-spine { display: flex; flex-direction: column; align-items: center; }
 .tl-node {
-  width: 12px; height: 12px;
-  border-radius: 50%;
-  margin-top: 23px;
-  flex-shrink: 0;
-  z-index: 1;
-  border: 2px solid var(--paper);
-  box-shadow: 0 0 0 2px currentColor;
-  transition: transform .18s;
+  width: 12px; height: 12px; border-radius: 50%; margin-top: 23px; flex-shrink: 0; z-index: 1;
+  border: 2px solid var(--paper); box-shadow: 0 0 0 2px currentColor; transition: transform .18s;
 }
 .tl-item:hover .tl-node { transform: scale(1.25); }
-.tl-line {
-  flex: 1;
-  width: 2px;
-  background: var(--border);
-  margin-top: 5px;
-  min-height: 20px;
-}
+.tl-line { flex: 1; width: 2px; background: var(--border); margin-top: 5px; min-height: 20px; }
 .tl-item:last-child .tl-line { display: none; }
 
-/* card */
 .tl-card {
-  background: var(--paper);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 18px 22px;
-  margin-bottom: 16px;
-  cursor: pointer;
+  background: var(--paper); border: 1px solid var(--border); border-radius: 14px;
+  padding: 18px 22px; margin-bottom: 16px; cursor: pointer;
   transition: border-color .18s, box-shadow .18s, background .3s;
 }
-.tl-card:hover {
-  border-color: var(--border2);
-  box-shadow: 0 4px 20px rgba(0,0,0,.07);
-}
+.tl-card:hover { border-color: var(--border2); box-shadow: 0 4px 20px rgba(0,0,0,.07); }
 .dark .tl-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.35); }
 
-.tl-card-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-}
+.tl-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
 .tl-tipo {
-  display: inline-flex;
-  align-items: center;
-  background: var(--accent-bg);
-  color: var(--accent);
-  border: 1px solid var(--accent-br);
-  border-radius: 6px;
-  padding: 3px 10px;
-  font-size: 12px;
-  font-weight: 600;
+  display: inline-flex; align-items: center; background: var(--accent-bg); color: var(--accent);
+  border: 1px solid var(--accent-br); border-radius: 6px; padding: 3px 10px; font-size: 12px; font-weight: 600;
 }
-.tl-ordem-tag {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  color: var(--sub);
-  margin-top: 5px;
-}
+.tl-ordem-tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--sub); margin-top: 5px; }
 .tl-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  border-radius: 20px;
-  padding: 4px 10px;
-  font-size: 11px;
-  font-weight: 600;
-  white-space: nowrap;
-  flex-shrink: 0;
+  display: inline-flex; align-items: center; gap: 5px; border-radius: 20px; padding: 4px 10px;
+  font-size: 11px; font-weight: 600; white-space: nowrap; flex-shrink: 0;
 }
 .tl-status-dot { width: 6px; height: 6px; border-radius: 50%; }
 
-/* descrição */
 .tl-desc {
-  font-size: 13px;
-  color: var(--sub);
-  line-height: 1.65;
-  padding: 10px 14px;
-  background: var(--bg);
-  border-radius: 8px;
-  border-left: 3px solid var(--border2);
-  margin-bottom: 14px;
-  transition: background .3s;
+  font-size: 13px; color: var(--sub); line-height: 1.65; padding: 10px 14px;
+  background: var(--bg); border-radius: 8px; border-left: 3px solid var(--border2);
+  margin-bottom: 14px; transition: background .3s;
 }
-
-/* campos grid */
-.tl-fields {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 12px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border);
-}
-.tl-field-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--sub);
-  margin-bottom: 3px;
-}
-.tl-field-value {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text);
-}
-.tl-field-value.hi {
-  color: var(--accent);
-  font-size: 16px;
-  font-weight: 600;
-}
+.tl-fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.tl-field-label { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--sub); margin-bottom: 3px; }
+.tl-field-value { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500; color: var(--text); }
+.tl-field-value.hi { color: var(--accent); font-size: 16px; font-weight: 600; }
 
 /* ══════════════════════════════════════
    DETAIL PANEL
 ══════════════════════════════════════ */
-.overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.4);
-  z-index: 150;
-  opacity: 0; pointer-events: none;
-  transition: opacity .3s;
-  backdrop-filter: blur(2px);
-}
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 150; opacity: 0; pointer-events: none; transition: opacity .3s; backdrop-filter: blur(2px); }
 .overlay.show { opacity: 1; pointer-events: all; }
 
 .detail-panel {
-  position: fixed;
-  top: 0; right: 0; bottom: 0;
-  width: 440px;
-  background: var(--paper);
-  border-left: 1px solid var(--border);
-  z-index: 200;
-  transform: translateX(100%);
-  transition: transform .3s cubic-bezier(.4,0,.2,1), background .3s;
-  overflow-y: auto;
-  padding: 32px 28px;
+  position: fixed; top: 0; right: 0; bottom: 0; width: 440px;
+  background: var(--paper); border-left: 1px solid var(--border); z-index: 200;
+  transform: translateX(100%); transition: transform .3s cubic-bezier(.4,0,.2,1), background .3s;
+  overflow-y: auto; padding: 32px 28px;
 }
 .detail-panel.open { transform: translateX(0); }
-
 .detail-close {
-  position: absolute; top: 20px; right: 20px;
-  width: 30px; height: 30px;
-  border-radius: 50%;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  color: var(--sub);
-  cursor: pointer;
-  font-size: 16px;
-  display: flex; align-items: center; justify-content: center;
-  transition: color .18s;
+  position: absolute; top: 20px; right: 20px; width: 30px; height: 30px; border-radius: 50%;
+  background: var(--bg); border: 1px solid var(--border); color: var(--sub); cursor: pointer;
+  font-size: 16px; display: flex; align-items: center; justify-content: center; transition: color .18s;
 }
 .detail-close:hover { color: var(--text); }
-
-.detail-kicker {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--sub);
-  margin-bottom: 4px;
-  font-family: 'JetBrains Mono', monospace;
-}
-.detail-title {
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin-bottom: 6px;
-}
-.detail-equip {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
-  color: var(--sub);
-  margin-bottom: 24px;
-}
-
-.detail-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  border-radius: 20px;
-  padding: 5px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  margin-bottom: 24px;
-}
-
-.detail-section {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--sub);
-  margin: 20px 0 10px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--border);
-}
-
-.detail-os-box {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--accent-br);
-  border-radius: 10px;
-  padding: 14px 16px;
-  font-size: 13px;
-  line-height: 1.7;
-  color: var(--text);
-  margin-bottom: 4px;
-  transition: background .3s;
-}
-
-.detail-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-.detail-field-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--sub);
-  margin-bottom: 3px;
-}
-.detail-field-value {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
-  color: var(--text);
-}
-.detail-field-value.hi {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--accent);
-}
+.detail-kicker { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--sub); margin-bottom: 4px; font-family: 'JetBrains Mono', monospace; }
+.detail-title { font-size: 20px; font-weight: 700; line-height: 1.2; margin-bottom: 6px; }
+.detail-equip { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--sub); margin-bottom: 24px; }
+.detail-status { display: inline-flex; align-items: center; gap: 6px; border-radius: 20px; padding: 5px 12px; font-size: 12px; font-weight: 600; margin-bottom: 24px; }
+.detail-section { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--sub); margin: 20px 0 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.detail-os-box { background: var(--bg); border: 1px solid var(--border); border-left: 3px solid var(--accent-br); border-radius: 10px; padding: 14px 16px; font-size: 13px; line-height: 1.7; color: var(--text); margin-bottom: 4px; transition: background .3s; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.detail-field-label { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--sub); margin-bottom: 3px; }
+.detail-field-value { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text); }
+.detail-field-value.hi { font-size: 18px; font-weight: 600; color: var(--accent); }
 
 /* ══════════════════════════════════════
-   EMPTY / LOADING STATES
+   EMPTY
 ══════════════════════════════════════ */
-.empty {
-  text-align: center;
-  padding: 80px 40px;
-  color: var(--sub);
-}
+.empty { text-align: center; padding: 80px 40px; color: var(--sub); }
 .empty-icon { font-size: 44px; margin-bottom: 14px; }
 .empty-title { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
 .empty-sub { font-size: 13px; line-height: 1.6; }
-
-/* demo pill */
-.demo-pill {
-  display: inline-flex; align-items: center; gap: 5px;
-  background: var(--green-bg);
-  color: var(--green);
-  border: 1px solid var(--green-br);
-  border-radius: 20px;
-  padding: 3px 11px;
-  font-size: 11px;
-  font-weight: 600;
-}
 
 /* ══════════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════════ */
 @media (max-width: 860px) {
-  /* Layout base */
   .layout { grid-template-columns: 1fr; }
   .main { padding: 16px 14px; gap: 18px; }
   .detail-panel { width: 100%; left: 0; }
-
-  /* Header compacto */
   .header { padding: 10px 14px; gap: 8px; }
-  .header-sub { display: none; }
-  .header-sep { display: none; }
+  .header-sub, .header-sep { display: none; }
   .logo { font-size: 13px; }
   #clock { display: none; }
-
-  /* Sidebar vira barra horizontal compacta */
-  .sidebar {
-    position: static;
-    height: auto;
-    flex-direction: column;
-    padding: 12px 12px 8px;
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-    max-height: 240px;
-    overflow-y: auto;
-  }
+  .sidebar { position: static; height: auto; padding: 12px 12px 8px; border-right: none; border-bottom: 1px solid var(--border); max-height: 240px; overflow-y: auto; }
   .sidebar-label { margin-bottom: 6px; }
   .equip-btn { padding: 8px 10px; }
   .equip-icon { width: 28px; height: 28px; font-size: 13px; }
   .equip-name { font-size: 12px; }
   .equip-ct { font-size: 10px; }
-
-  /* Cabeçalho do equipamento */
   .equip-header { gap: 12px; padding-bottom: 16px; }
   .equip-header-icon { width: 42px; height: 42px; font-size: 20px; border-radius: 10px; }
   .equip-header-info h1 { font-size: 16px; }
   .equip-header-info p { font-size: 11px; }
-
-  /* Card Última GM */
   .ultima-gm-card { padding: 14px 16px; gap: 12px; flex-wrap: wrap; }
   .ultima-gm-icon { width: 40px; height: 40px; font-size: 18px; }
   .ultima-gm-tipo { font-size: 13px; }
   .ultima-gm-meta { gap: 8px; }
   .ultima-gm-meta span { font-size: 10px; }
   .ultima-gm-badge { font-size: 10px; padding: 3px 9px; }
-
-  /* KPIs — 2 colunas no mobile */
   .kpis { grid-template-columns: 1fr 1fr; gap: 8px; }
   .kpi { padding: 14px 14px; }
   .kpi-value { font-size: 22px; }
   .kpi-label { font-size: 9px; margin-bottom: 6px; }
   .kpi-sub { font-size: 10px; }
-
-  /* Filtros empilhados */
   .filters-row { flex-direction: column; align-items: stretch; gap: 8px; padding: 12px; }
   .filters-row label { margin-bottom: -4px; }
-  .filters-row select,
-  .filters-row input[type="date"] { width: 100%; padding: 8px 10px; font-size: 13px; }
+  .filters-row select, .filters-row input[type="date"] { width: 100%; padding: 8px 10px; font-size: 13px; }
   .filter-sep { display: none; }
   .btn-accent, .btn-ghost { width: 100%; padding: 9px; font-size: 13px; text-align: center; }
-
-  /* Timeline */
   .tl-item { grid-template-columns: 54px 16px 1fr; gap: 0 10px; }
   .tl-date-day { font-size: 16px; }
   .tl-date-rest { font-size: 9px; }
@@ -900,13 +461,10 @@ body {
   .tl-fields { grid-template-columns: 1fr 1fr; gap: 10px; }
   .tl-field-value { font-size: 12px; }
   .tl-field-value.hi { font-size: 14px; }
-
-  /* Detail panel */
   .detail-panel { padding: 24px 18px; }
   .detail-title { font-size: 17px; }
   .detail-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
 }
-
 @media (max-width: 420px) {
   .kpis { grid-template-columns: 1fr; }
   .tl-item { grid-template-columns: 44px 14px 1fr; gap: 0 8px; }
@@ -915,7 +473,6 @@ body {
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="header">
   <div class="logo">GM <em>/</em> Grandes Manutenções</div>
   <div class="header-sep"></div>
@@ -934,13 +491,9 @@ body {
 </header>
 
 <div class="layout">
-
-  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-label">Equipamentos</div>
   </aside>
-
-  <!-- MAIN -->
   <main class="main" id="main">
     <div class="empty">
       <div class="empty-icon">🔧</div>
@@ -948,10 +501,8 @@ body {
       <div class="empty-sub">Escolha um equipamento na lista ao lado<br>para ver o histórico completo de manutenções.</div>
     </div>
   </main>
-
 </div>
 
-<!-- OVERLAY + DETAIL PANEL -->
 <div class="overlay" id="overlay" onclick="closeDetail()"></div>
 <div class="detail-panel" id="detail-panel">
   <button class="detail-close" onclick="closeDetail()">×</button>
@@ -966,169 +517,113 @@ body {
 </div>
 
 <script>
-// ════════════════════════════════════════════════════════════
-//  CONFIG — cole sua URL aqui quando tiver o JSON real
-// ════════════════════════════════════════════════════════════
 const JSON_URL = 'https://raw.githubusercontent.com/SitesLG/HistGM/refs/heads/main/dados.json';
 
 const COL = {
-  ordem:     'ORDEM',
-  equip:     'equipamento',
-  frota:     'frota',
-  simul:     'codigo_simulador',
-  textoSap:  'Texto_Os_Sap',
-  textoAbv:  'Texto_Abv',
-  horimetro: 'Horimetro_Execucao',
-  data:      'Data_Execucao',
-  status:    'Status_Sistema',
+  ordem:'ORDEM', equip:'equipamento', frota:'frota', simul:'codigo_simulador',
+  textoSap:'Texto_Os_Sap', textoAbv:'Texto_Abv', horimetro:'Horimetro_Execucao',
+  data:'Data_Execucao', status:'Status_Sistema',
 };
 
-// ════════════════════════════════════════════════════════════
-//  DADOS DE DEMONSTRAÇÃO
-// ════════════════════════════════════════════════════════════
 const DEMO_FLAT = [
-  // F-FWX-0001
   {ORDEM:'4500011',equipamento:'F-FWX-0001',frota:'F-FWX-0001',codigo_simulador:'SIM-FWX-01',Texto_Os_Sap:'Grande manutenção do buggie: revisão completa da suspensão dianteira e traseira, troca de rolamentos das rodas, alinhamento e balanceamento. Verificação do sistema de direção e substituição do fluido hidráulico.',Texto_Abv:'Buggie',Horimetro_Execucao:512,Data_Execucao:'2023-03-08',Status_Sistema:'Encerrada'},
   {ORDEM:'4500038',equipamento:'F-FWX-0001',frota:'F-FWX-0001',codigo_simulador:'SIM-FWX-01',Texto_Os_Sap:'Manutenção geral do motor diesel: troca de óleo lubrificante, filtros de óleo, ar e combustível. Regulagem de válvulas, verificação dos injetores e teste de compressão em todos os cilindros.',Texto_Abv:'Motor Diesel',Horimetro_Execucao:1020,Data_Execucao:'2023-08-22',Status_Sistema:'Encerrada'},
-  {ORDEM:'4500082',equipamento:'F-FWX-0001',frota:'F-FWX-0001',codigo_simulador:'SIM-FWX-01',Texto_Os_Sap:'Substituição completa do assento do operador por desgaste acentuado do estofamento e falha no mecanismo de ajuste de altura. Instalação de novo assento com amortecedor de vibração e cinto de segurança.',Texto_Abv:'Assento',Horimetro_Execucao:1380,Data_Execucao:'2023-12-05',Status_Sistema:'Encerrada'},
-  {ORDEM:'4500140',equipamento:'F-FWX-0001',frota:'F-FWX-0001',codigo_simulador:'SIM-FWX-02',Texto_Os_Sap:'Revisão de 2000h do motor diesel: substituição do turbocompressor, troca da correia dentada e tensor, revisão da bomba d\'água e termostato. Limpeza do sistema de arrefecimento e troca do líquido.',Texto_Abv:'Motor Diesel',Horimetro_Execucao:2008,Data_Execucao:'2024-05-14',Status_Sistema:'Encerrada'},
-  {ORDEM:'4500201',equipamento:'F-FWX-0001',frota:'F-FWX-0001',codigo_simulador:'SIM-FWX-02',Texto_Os_Sap:'Manutenção corretiva no buggie após identificação de folga no diferencial traseiro durante inspeção de rota. Desmontagem, revisão de engrenagens e substituição de retentores e rolamentos.',Texto_Abv:'Buggie',Horimetro_Execucao:2310,Data_Execucao:'2024-09-03',Status_Sistema:'Em andamento'},
-  // F-HVE-0002
-  {ORDEM:'4500019',equipamento:'F-HVE-0002',frota:'F-HVE-0002',codigo_simulador:'SIM-HVE-01',Texto_Os_Sap:'Manutenção preventiva de 500h do motor diesel: troca de óleo e filtros, verificação das correntes de distribuição, calibração dos bicos injetores e limpeza do sistema de admissão de ar.',Texto_Abv:'Motor Diesel',Horimetro_Execucao:498,Data_Execucao:'2023-02-20',Status_Sistema:'Encerrada'},
-  {ORDEM:'4500061',equipamento:'F-HVE-0002',frota:'F-HVE-0002',codigo_simulador:'SIM-HVE-01',Texto_Os_Sap:'Revisão e regulagem do assento do operador. Troca das guias deslizantes por desgaste e lubrificação de todos os mecanismos de ajuste. Substituição do apoio lombar e capa do encosto.',Texto_Abv:'Assento',Horimetro_Execucao:870,Data_Execucao:'2023-06-11',Status_Sistema:'Encerrada'},
-  {ORDEM:'4500119',equipamento:'F-HVE-0002',frota:'F-HVE-0002',codigo_simulador:'SIM-HVE-01',Texto_Os_Sap:'Revisão geral do buggie de 1000h: substituição dos quatro pneus, troca dos amortecedores traseiros, alinhamento da geometria de direção e revisão completa do sistema de freios hidráulicos.',Texto_Abv:'Buggie',Horimetro_Execucao:1005,Data_Execucao:'2023-10-30',Status_Sistema:'Encerrada'},
-  {ORDEM:'4500175',equipamento:'F-HVE-0002',frota:'F-HVE-0002',codigo_simulador:'SIM-HVE-02',Texto_Os_Sap:'Grande manutenção do motor diesel de 1500h: revisão do cabeçote com troca de juntas e vedações, substituição de injetores, revisão da bomba de combustível de alta pressão e teste de bancada.',Texto_Abv:'Motor Diesel',Horimetro_Execucao:1512,Data_Execucao:'2024-02-28',Status_Sistema:'Encerrada'},
-  {ORDEM:'4500230',equipamento:'F-HVE-0002',frota:'F-HVE-0002',codigo_simulador:'SIM-HVE-02',Texto_Os_Sap:'Substituição do assento completo modelo ergonômico. Equipamento antigo apresentava ruptura na estrutura metálica de suporte. Instalação de assento com suspensão pneumática e sistema de aquecimento.',Texto_Abv:'Assento',Horimetro_Execucao:1880,Data_Execucao:'2024-07-19',Status_Sistema:'Pendente'},
-  // F-FWX-0377
-  {ORDEM:'4500033',equipamento:'F-FWX-0377',frota:'F-FWX-0377',codigo_simulador:'SIM-FWX-03',Texto_Os_Sap:'Manutenção preventiva do assento: lubrificação das guias, ajuste do mecanismo de reclinação e troca da espuma do assento por desgaste. Verificação e aperto dos parafusos de fixação ao chassi.',Texto_Abv:'Assento',Horimetro_Execucao:340,Data_Execucao:'2023-04-17',Status_Sistema:'Encerrada'},
-  {ORDEM:'4500077',equipamento:'F-FWX-0377',frota:'F-FWX-0377',codigo_simulador:'SIM-FWX-03',Texto_Os_Sap:'Revisão de 1000h do motor diesel: troca completa de filtros, óleo, verificação da correia de acessórios e tensor, inspeção visual do bloco e cabeçote, teste de pressão do sistema de arrefecimento.',Texto_Abv:'Motor Diesel',Horimetro_Execucao:1002,Data_Execucao:'2023-09-06',Status_Sistema:'Encerrada'},
-  {ORDEM:'4500122',equipamento:'F-FWX-0377',frota:'F-FWX-0377',codigo_simulador:'SIM-FWX-03',Texto_Os_Sap:'Manutenção corretiva do buggie após ruptura do terminal de direção esquerdo em operação. Substituição do terminal, alinhamento completo da geometria, revisão dos pivôs e inspeção dos amortecedores.',Texto_Abv:'Buggie',Horimetro_Execucao:1290,Data_Execucao:'2024-01-24',Status_Sistema:'Encerrada'},
-  {ORDEM:'4500166',equipamento:'F-FWX-0377',frota:'F-FWX-0377',codigo_simulador:'SIM-FWX-04',Texto_Os_Sap:'Grande manutenção do motor diesel de 2000h: revisão completa do bloco, substituição de anéis e bronzinas, troca do turbo, correia dentada, bomba d\'água e todo o sistema de injeção.',Texto_Abv:'Motor Diesel',Horimetro_Execucao:2001,Data_Execucao:'2024-06-10',Status_Sistema:'Encerrada'},
-  {ORDEM:'4500211',equipamento:'F-FWX-0377',frota:'F-FWX-0377',codigo_simulador:'SIM-FWX-04',Texto_Os_Sap:'Revisão preventiva de 2500h do buggie: inspeção dos quatro amortecedores, troca dos pneus traseiros com desgaste assimétrico, revisão do diferencial, sangria e troca do fluido de freio.',Texto_Abv:'Buggie',Horimetro_Execucao:2490,Data_Execucao:'2024-10-15',Status_Sistema:'Em andamento'},
+  {ORDEM:'4500082',equipamento:'F-FWX-0001',frota:'F-FWX-0001',codigo_simulador:'SIM-FWX-01',Texto_Os_Sap:'Substituição completa do assento do operador por desgaste acentuado do estofamento e falha no mecanismo de ajuste de altura.',Texto_Abv:'Assento',Horimetro_Execucao:1380,Data_Execucao:'2023-12-05',Status_Sistema:'Encerrada'},
+  {ORDEM:'4500140',equipamento:'F-FWX-0001',frota:'F-FWX-0001',codigo_simulador:'SIM-FWX-02',Texto_Os_Sap:'Revisão de 2000h do motor diesel: substituição do turbocompressor, troca da correia dentada e tensor, revisão da bomba d\'água e termostato.',Texto_Abv:'Motor Diesel',Horimetro_Execucao:2008,Data_Execucao:'2024-05-14',Status_Sistema:'Encerrada'},
+  {ORDEM:'4500201',equipamento:'F-FWX-0001',frota:'F-FWX-0001',codigo_simulador:'SIM-FWX-02',Texto_Os_Sap:'Manutenção corretiva no buggie após identificação de folga no diferencial traseiro durante inspeção de rota.',Texto_Abv:'Buggie',Horimetro_Execucao:2310,Data_Execucao:'2024-09-03',Status_Sistema:'Em andamento'},
+  {ORDEM:'4500019',equipamento:'F-HVE-0002',frota:'F-HVE-0002',codigo_simulador:'SIM-HVE-01',Texto_Os_Sap:'Manutenção preventiva de 500h do motor diesel: troca de óleo e filtros, verificação das correntes de distribuição, calibração dos bicos injetores.',Texto_Abv:'Motor Diesel',Horimetro_Execucao:498,Data_Execucao:'2023-02-20',Status_Sistema:'Encerrada'},
+  {ORDEM:'4500061',equipamento:'F-HVE-0002',frota:'F-HVE-0002',codigo_simulador:'SIM-HVE-01',Texto_Os_Sap:'Revisão e regulagem do assento do operador. Troca das guias deslizantes por desgaste e lubrificação de todos os mecanismos de ajuste.',Texto_Abv:'Assento',Horimetro_Execucao:870,Data_Execucao:'2023-06-11',Status_Sistema:'Encerrada'},
+  {ORDEM:'4500119',equipamento:'F-HVE-0002',frota:'F-HVE-0002',codigo_simulador:'SIM-HVE-01',Texto_Os_Sap:'Revisão geral do buggie de 1000h: substituição dos quatro pneus, troca dos amortecedores traseiros, alinhamento da geometria de direção.',Texto_Abv:'Buggie',Horimetro_Execucao:1005,Data_Execucao:'2023-10-30',Status_Sistema:'Encerrada'},
+  {ORDEM:'4500175',equipamento:'F-HVE-0002',frota:'F-HVE-0002',codigo_simulador:'SIM-HVE-02',Texto_Os_Sap:'Grande manutenção do motor diesel de 1500h: revisão do cabeçote com troca de juntas e vedações, substituição de injetores.',Texto_Abv:'Motor Diesel',Horimetro_Execucao:1512,Data_Execucao:'2024-02-28',Status_Sistema:'Encerrada'},
+  {ORDEM:'4500230',equipamento:'F-HVE-0002',frota:'F-HVE-0002',codigo_simulador:'SIM-HVE-02',Texto_Os_Sap:'Substituição do assento completo modelo ergonômico. Equipamento antigo apresentava ruptura na estrutura metálica de suporte.',Texto_Abv:'Assento',Horimetro_Execucao:1880,Data_Execucao:'2024-07-19',Status_Sistema:'Pendente'},
+  {ORDEM:'4500033',equipamento:'F-FWX-0377',frota:'F-FWX-0377',codigo_simulador:'SIM-FWX-03',Texto_Os_Sap:'Manutenção preventiva do assento: lubrificação das guias, ajuste do mecanismo de reclinação e troca da espuma do assento por desgaste.',Texto_Abv:'Assento',Horimetro_Execucao:340,Data_Execucao:'2023-04-17',Status_Sistema:'Encerrada'},
+  {ORDEM:'4500077',equipamento:'F-FWX-0377',frota:'F-FWX-0377',codigo_simulador:'SIM-FWX-03',Texto_Os_Sap:'Revisão de 1000h do motor diesel: troca completa de filtros, óleo, verificação da correia de acessórios e tensor.',Texto_Abv:'Motor Diesel',Horimetro_Execucao:1002,Data_Execucao:'2023-09-06',Status_Sistema:'Encerrada'},
+  {ORDEM:'4500122',equipamento:'F-FWX-0377',frota:'F-FWX-0377',codigo_simulador:'SIM-FWX-03',Texto_Os_Sap:'Manutenção corretiva do buggie após ruptura do terminal de direção esquerdo em operação.',Texto_Abv:'Buggie',Horimetro_Execucao:1290,Data_Execucao:'2024-01-24',Status_Sistema:'Encerrada'},
+  {ORDEM:'4500166',equipamento:'F-FWX-0377',frota:'F-FWX-0377',codigo_simulador:'SIM-FWX-04',Texto_Os_Sap:'Grande manutenção do motor diesel de 2000h: revisão completa do bloco, substituição de anéis e bronzinas, troca do turbo.',Texto_Abv:'Motor Diesel',Horimetro_Execucao:2001,Data_Execucao:'2024-06-10',Status_Sistema:'Encerrada'},
+  {ORDEM:'4500211',equipamento:'F-FWX-0377',frota:'F-FWX-0377',codigo_simulador:'SIM-FWX-04',Texto_Os_Sap:'Revisão preventiva de 2500h do buggie: inspeção dos quatro amortecedores, troca dos pneus traseiros com desgaste assimétrico.',Texto_Abv:'Buggie',Horimetro_Execucao:2490,Data_Execucao:'2024-10-15',Status_Sistema:'Em andamento'},
 ];
 
-// ════════════════════════════════════════════════════════════
-//  ESTADO
-// ════════════════════════════════════════════════════════════
-let ALL_FLAT   = [];   // todos os registros normalizados (flat)
-let EQUIPMENTS = [];   // lista agrupada por equipamento
-let activeEq   = null; // índice ativo na sidebar
-let filtered   = [];   // registros do eq ativo após filtro
+// ── Estado ──
+let ALL_FLAT   = [];
+let EQUIPMENTS = [];
+let activeEq   = null;
+let filtered   = [];
+let filterAbertosAtivo = false;
 
 const ICONS = { 'F-FWX': '🚜', 'F-HVE': '🏗️' };
 const STATUS_CFG = {
-  'LIB':     { color: 'var(--warn)',  bg: 'var(--warn-bg)',  br: 'var(--warn-br)',  dot: '#c49a38' },
-  'ENT':     { color: 'var(--green)', bg: 'var(--green-bg)', br: 'var(--green-br)', dot: '#38a862' },
-  'default': { color: 'var(--blue)',  bg: 'var(--blue-bg)',  br: 'var(--blue-br)',  dot: '#4d84cc' },
+  'LIB':     { color:'var(--warn)',  bg:'var(--warn-bg)',  br:'var(--warn-br)',  dot:'#c49a38' },
+  'ENT':     { color:'var(--green)', bg:'var(--green-bg)', br:'var(--green-br)', dot:'#38a862' },
+  'default': { color:'var(--blue)',  bg:'var(--blue-bg)',  br:'var(--blue-br)',  dot:'#4d84cc' },
 };
 function getStatus(status) {
-  const s = (status || '').toUpperCase();
+  const s = (status||'').toUpperCase();
   if (s.includes('LIB')) return STATUS_CFG['LIB'];
   if (s.includes('ENT')) return STATUS_CFG['ENT'];
   return STATUS_CFG['default'];
 }
 
-// ════════════════════════════════════════════════════════════
-//  HELPER — DATA SEGURA
-// ════════════════════════════════════════════════════════════
-function safeDate(dateStr) {
-  if (!dateStr || dateStr.length < 8) return null;
-  // Normaliza: aceita YYYY-MM-DD ou DD/MM/YYYY ou timestamp ISO
-  let iso = dateStr.substring(0, 10);
-  // Se vier no formato DD/MM/YYYY, converte
-  if (iso.includes('/')) {
-    const [d, m, y] = iso.split('/');
-    iso = `${y}-${m}-${d}`;
-  }
-  const dt = new Date(iso + 'T12:00:00');
+function safeDate(d) {
+  if (!d || d.length < 8) return null;
+  let iso = d.substring(0,10);
+  if (iso.includes('/')) { const [dd,mm,yy]=iso.split('/'); iso=`${yy}-${mm}-${dd}`; }
+  const dt = new Date(iso+'T12:00:00');
   return isNaN(dt.getTime()) ? null : dt;
 }
-function fmtDate(dateStr, opts) {
-  const dt = safeDate(dateStr);
+function fmtDate(d, opts) {
+  const dt = safeDate(d);
   return dt ? dt.toLocaleDateString('pt-BR', opts) : 'Data inválida';
 }
 
-// ════════════════════════════════════════════════════════════
-//  RELÓGIO
-// ════════════════════════════════════════════════════════════
 function tick() {
-  const agora = new Date();
-agora.setMinutes(0, 0, 0);
-document.getElementById('sync-label').textContent =
-  'Atualizado ' + agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const a = new Date(); a.setMinutes(0,0,0);
+  document.getElementById('sync-label').textContent = 'Atualizado ' + a.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
 }
-setInterval(tick, 1000); tick();
+setInterval(tick,1000); tick();
 
-// ════════════════════════════════════════════════════════════
-//  TEMA
-// ════════════════════════════════════════════════════════════
 function toggleTheme() {
   const dark = document.body.classList.toggle('dark');
   document.getElementById('theme-knob').textContent = dark ? '☀️' : '🌙';
   localStorage.setItem('gm-theme', dark ? 'dark' : 'light');
 }
-(function () {
-  const s = localStorage.getItem('gm-theme');
-  const sys = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  if (s === 'dark'){
+(function(){
+  if (localStorage.getItem('gm-theme')==='dark') {
     document.body.classList.add('dark');
     document.getElementById('theme-knob').textContent = '☀️';
   }
 })();
 
-// ════════════════════════════════════════════════════════════
-//  NORMALIZA REGISTRO FLAT
-// ════════════════════════════════════════════════════════════
 function normalize(r) {
   return {
-    ordem:     String(r[COL.ordem]    || r.ORDEM            || ''),
-    equip:     String(r[COL.equip]    || r.equipamento      || ''),
-    frota:     String(r[COL.frota]    || r.frota            || ''),
-    simul:     String(r[COL.simul]    || r.codigo_simulador || ''),
-    textoSap:  String(r[COL.textoSap] || r.Texto_Os_Sap     || ''),
-    tipo:      String(r[COL.textoAbv] || r.Texto_Abv        || ''),
-    hor:       Number(r[COL.horimetro]|| r.Horimetro_Execucao|| 0),
-    data:      String(r[COL.data]     || r.Data_Execucao    || '').substring(0, 10),
-    status:    String(r[COL.status]   || r.Status_Sistema   || ''),
+    ordem:    String(r[COL.ordem]    || r.ORDEM            || ''),
+    equip:    String(r[COL.equip]    || r.equipamento      || ''),
+    frota:    String(r[COL.frota]    || r.frota            || ''),
+    simul:    String(r[COL.simul]    || r.codigo_simulador || ''),
+    textoSap: String(r[COL.textoSap] || r.Texto_Os_Sap     || ''),
+    tipo:     String(r[COL.textoAbv] || r.Texto_Abv        || ''),
+    hor:      Number(r[COL.horimetro]|| r.Horimetro_Execucao|| 0),
+    data:     String(r[COL.data]     || r.Data_Execucao    || '').substring(0,10),
+    status:   String(r[COL.status]   || r.Status_Sistema   || ''),
   };
 }
 
-// ════════════════════════════════════════════════════════════
-//  AGRUPA POR EQUIPAMENTO
-// ════════════════════════════════════════════════════════════
 function groupByEquip(rows) {
   const map = {};
-  rows.forEach(r => {
-    if (!map[r.equip]) map[r.equip] = [];
-    map[r.equip].push(r);
-  });
-  return Object.entries(map)
-    .sort((a, b) => a[0].localeCompare(b[0]))
-    .map(([name, items]) => ({
-      name,
-      icon: ICONS[name.substring(0, 5)] || '⚙️',
-      items,
-    }));
+  rows.forEach(r => { if (!map[r.equip]) map[r.equip]=[]; map[r.equip].push(r); });
+  return Object.entries(map).sort((a,b)=>a[0].localeCompare(b[0]))
+    .map(([name, items]) => ({ name, icon: ICONS[name.substring(0,5)] || '⚙️', items }));
 }
 
-// ════════════════════════════════════════════════════════════
-//  CARREGAR DADOS
-// ════════════════════════════════════════════════════════════
 async function loadData() {
   document.getElementById('sync-label').textContent = 'Carregando...';
   let rows;
-  if (JSON_URL) {
-    try {
-      const res  = await fetch(JSON_URL + '?_=' + Date.now());
-      const json = await res.json();
-      rows = Array.isArray(json) ? json : (json.value || json.registros || []);
-      document.getElementById('sync-label').textContent =
-        'Atualizado ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    } catch (e) {
-      rows = DEMO_FLAT;
-      document.getElementById('sync-label').textContent = 'Demo';
-    }
-  } else {
+  try {
+    const res  = await fetch(JSON_URL + '?_=' + Date.now());
+    const json = await res.json();
+    rows = Array.isArray(json) ? json : (json.value || json.registros || []);
+    document.getElementById('sync-label').textContent =
+      'Atualizado ' + new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  } catch(e) {
     rows = DEMO_FLAT;
     document.getElementById('sync-label').textContent = 'Demo';
   }
@@ -1138,13 +633,8 @@ async function loadData() {
   selectEquip(0);
 }
 
-// ════════════════════════════════════════════════════════════
-//  SIDEBAR
-// ════════════════════════════════════════════════════════════
 function renderSidebar() {
   const sb = document.getElementById('sidebar');
-
-  // Only rebuild the static structure once
   if (!document.getElementById('sidebar-filter')) {
     sb.innerHTML = `
       <div class="sidebar-label">Equipamentos</div>
@@ -1154,133 +644,126 @@ function renderSidebar() {
         <button class="sidebar-search-clear" id="sidebar-clear" title="Limpar busca">×</button>
       </div>
       <div class="sidebar-sep"></div>
-      <div id="sidebar-list"></div>
-    `;
+      <div id="sidebar-list"></div>`;
     const input = document.getElementById('sidebar-filter');
     const wrap  = document.getElementById('sidebar-search-wrap');
     const clear = document.getElementById('sidebar-clear');
-
-    input.addEventListener('input', function() {
-      wrap.classList.toggle('has-value', this.value.length > 0);
-      renderSidebarList(this.value);
-    });
-    clear.addEventListener('click', function() {
-      input.value = '';
-      wrap.classList.remove('has-value');
-      input.focus();
-      renderSidebarList('');
-    });
+    input.addEventListener('input', function() { wrap.classList.toggle('has-value', this.value.length>0); renderSidebarList(this.value); });
+    clear.addEventListener('click', function() { input.value=''; wrap.classList.remove('has-value'); input.focus(); renderSidebarList(''); });
   }
   renderSidebarList('');
 }
 
 function renderSidebarList(filterText) {
-  const query = (filterText || '').toLowerCase().trim();
+  const query = (filterText||'').toLowerCase().trim();
   const list  = document.getElementById('sidebar-list');
   if (!list) return;
   list.innerHTML = '';
-
-  let anyVisible = false;
+  let any = false;
   EQUIPMENTS.forEach((eq, i) => {
     if (query && !eq.name.toLowerCase().includes(query)) return;
-    anyVisible = true;
+    any = true;
     const btn = document.createElement('button');
-    btn.className = 'equip-btn' + (i === activeEq ? ' active' : '');
-    btn.innerHTML = `
-      <div class="equip-icon">${eq.icon}</div>
-      <div class="equip-meta">
-        <div class="equip-name">${eq.name}</div>
-        <div class="equip-ct">${eq.items.length} manutenç${eq.items.length !== 1 ? 'ões' : 'ão'}</div>
-      </div>`;
+    btn.className = 'equip-btn' + (i===activeEq?' active':'');
+    btn.innerHTML = `<div class="equip-icon">${eq.icon}</div><div class="equip-meta"><div class="equip-name">${eq.name}</div><div class="equip-ct">${eq.items.length} manutenç${eq.items.length!==1?'ões':'ão'}</div></div>`;
     btn.onclick = () => selectEquip(i);
     list.appendChild(btn);
   });
-
-  if (!anyVisible) {
-    const empty = document.createElement('div');
-    empty.style.cssText = 'text-align:center;padding:20px 10px;color:var(--sub);font-size:12px;';
-    empty.textContent = 'Nenhum equipamento encontrado';
-    list.appendChild(empty);
+  if (!any) {
+    const e = document.createElement('div');
+    e.style.cssText = 'text-align:center;padding:20px 10px;color:var(--sub);font-size:12px;';
+    e.textContent = 'Nenhum equipamento encontrado';
+    list.appendChild(e);
   }
 }
 
-// ════════════════════════════════════════════════════════════
-//  SELECIONAR EQUIPAMENTO
-// ════════════════════════════════════════════════════════════
 function selectEquip(idx) {
   activeEq = idx;
-  const currentFilter = document.getElementById('sidebar-filter') ? document.getElementById('sidebar-filter').value : '';
-  renderSidebarList(currentFilter);
+  filterAbertosAtivo = false;
+  const cur = document.getElementById('sidebar-filter');
+  renderSidebarList(cur ? cur.value : '');
   filtered = [...EQUIPMENTS[idx].items];
   renderMain();
 }
 
-// ════════════════════════════════════════════════════════════
-//  FILTRAR
-// ════════════════════════════════════════════════════════════
+function isAberto(r) {
+  const h = (r.status + ' ' + r.tipo).toUpperCase();
+  return h.includes('LIB') || h.includes('ABER') || h.includes('ANDAMENTO') || h.includes('PENDENTE');
+}
+
 function applyFilters() {
+  filterAbertosAtivo = false;
   const tipo    = document.getElementById('fTipo').value;
   const dataIni = document.getElementById('fDataIni').value;
   const dataFim = document.getElementById('fDataFim').value;
-  const src     = EQUIPMENTS[activeEq].items;
-  filtered = src.filter(r => {
-    if (tipo    && r.tipo < tipo || tipo && r.tipo !== tipo) {
-      if (r.tipo !== tipo) return false;
-    }
-    if (dataIni && r.data < dataIni) return false;
-    if (dataFim && r.data > dataFim) return false;
+  filtered = EQUIPMENTS[activeEq].items.filter(r => {
+    if (tipo    && r.tipo !== tipo)   return false;
+    if (dataIni && r.data < dataIni)  return false;
+    if (dataFim && r.data > dataFim)  return false;
     return true;
   });
+  updateKpiAbertos();
   renderTimeline();
 }
 
 function clearFilters() {
+  filterAbertosAtivo = false;
   document.getElementById('fTipo').value    = '';
   document.getElementById('fDataIni').value = '';
   document.getElementById('fDataFim').value = '';
   filtered = [...EQUIPMENTS[activeEq].items];
+  updateKpiAbertos();
   renderTimeline();
 }
 
-function filterAbertos() {
-  const src = EQUIPMENTS[activeEq].items;
-  filtered = src.filter(r => {
-    const haystack = (r.status + ' ' + r.textoSap + ' ' + r.tipo).toUpperCase();
-    return haystack.includes('LIB') || haystack.includes('ABER');
-  });
-  // Limpa os filtros visuais para não confundir
-  document.getElementById('fTipo').value    = '';
-  document.getElementById('fDataIni').value = '';
-  document.getElementById('fDataFim').value = '';
+// ── Toggle filtro Em Aberto ──
+function toggleFilterAbertos() {
+  if (filterAbertosAtivo) {
+    filterAbertosAtivo = false;
+    filtered = [...EQUIPMENTS[activeEq].items];
+  } else {
+    filterAbertosAtivo = true;
+    filtered = EQUIPMENTS[activeEq].items.filter(isAberto);
+    document.getElementById('fTipo').value    = '';
+    document.getElementById('fDataIni').value = '';
+    document.getElementById('fDataFim').value = '';
+  }
+  updateKpiAbertos();
   renderTimeline();
 }
 
+function updateKpiAbertos() {
+  const card = document.getElementById('kpi-abertos');
+  if (!card) return;
+  if (filterAbertosAtivo) {
+    card.classList.add('filter-active');
+    card.setAttribute('data-tip', 'Clique para remover o filtro');
+  } else {
+    card.classList.remove('filter-active');
+    card.setAttribute('data-tip', 'Clique para filtrar pendentes / em andamento');
+  }
+}
 
 function renderMain() {
-  const eq      = EQUIPMENTS[activeEq];
-  const src     = eq.items;
-  const maxH    = Math.max(...src.map(r => r.hor));
-  const avgH    = Math.round(src.reduce((a, r) => a + r.hor, 0) / src.length);
-  const abertos = src.filter(r => {
-    const haystack = (r.status + ' ' + r.textoSap + ' ' + r.tipo).toUpperCase();
-    return haystack.includes('LIB') || haystack.includes('ABER');
-  }).length;
-  const ultima  = [...src].sort((a,b) => b.data.localeCompare(a.data))[0];
-  const tipos   = [...new Set(src.map(r => r.tipo))].sort();
+  const eq     = EQUIPMENTS[activeEq];
+  const src    = eq.items;
+  const avgH   = Math.round(src.reduce((a,r)=>a+r.hor,0) / src.length);
+  const abertos = src.filter(isAberto).length;
+  const ultima  = [...src].sort((a,b)=>b.data.localeCompare(a.data))[0];
+  const tipos   = [...new Set(src.map(r=>r.tipo))].sort();
+  const tipAtivo = filterAbertosAtivo ? ' filter-active' : '';
 
   document.getElementById('main').innerHTML = `
-    <!-- cabeçalho equipamento -->
     <div class="equip-header">
       <div class="equip-header-icon">${eq.icon}</div>
       <div class="equip-header-info">
         <h1>${eq.name}</h1>
-        <p>Histórico completo de grandes manutenções · ${src.length} registro${src.length !== 1 ? 's' : ''}</p>
+        <p>Histórico completo de grandes manutenções · ${src.length} registro${src.length!==1?'s':''}</p>
       </div>
     </div>
 
-    <!-- Card Última GM Executada -->
     ${ultima ? `
-    <div class="ultima-gm-card" onclick="openDetail(${ALL_FLAT.findIndex(x => x.ordem === ultima.ordem)})">
+    <div class="ultima-gm-card" onclick="openDetail(${ALL_FLAT.findIndex(x=>x.ordem===ultima.ordem)})">
       <div class="ultima-gm-icon">🔧</div>
       <div class="ultima-gm-info">
         <div class="ultima-gm-label">Última GM Executada</div>
@@ -1292,13 +775,9 @@ function renderMain() {
           <span>👤 ${ultima.frota}</span>
         </div>
       </div>
-      <div class="ultima-gm-badge">${(() => {
-        const diff = Math.round((new Date() - new Date(ultima.data+'T12:00:00')) / 86400000);
-        return diff === 0 ? 'Hoje' : diff === 1 ? '1 dia atrás' : diff + ' dias atrás';
-      })()}</div>
+      <div class="ultima-gm-badge">${(()=>{const d=Math.round((new Date()-new Date(ultima.data+'T12:00:00'))/86400000);return d===0?'Hoje':d===1?'1 dia atrás':d+' dias atrás';})()}</div>
     </div>` : ''}
 
-    <!-- KPIs -->
     <div class="kpis">
       <div class="kpi" style="--kpi-color:var(--accent)">
         <div class="kpi-label">Total de GMs</div>
@@ -1312,29 +791,32 @@ function renderMain() {
       </div>
       <div class="kpi" style="--kpi-color:var(--green)">
         <div class="kpi-label">Último Horímetro</div>
-        <div class="kpi-value">${ultima ? ultima.hor.toLocaleString('pt-BR') : '—'}<span style="font-size:14px;font-weight:400"> h</span></div>
+        <div class="kpi-value">${ultima?ultima.hor.toLocaleString('pt-BR'):'—'}<span style="font-size:14px;font-weight:400"> h</span></div>
         <div class="kpi-sub">na última GM</div>
       </div>
-      <div class="kpi" style="--kpi-color:var(--warn);cursor:pointer;" onclick="filterAbertos()" title="Clique para filtrar">
+      <div
+        class="kpi${tipAtivo}"
+        id="kpi-abertos"
+        style="--kpi-color:var(--warn);cursor:pointer;"
+        onclick="toggleFilterAbertos()"
+        data-tip="${filterAbertosAtivo ? 'Clique para remover o filtro' : 'Clique para filtrar pendentes / em andamento'}"
+      >
         <div class="kpi-label">Em Aberto</div>
         <div class="kpi-value">${abertos}</div>
-        <div class="kpi-sub">pendente${abertos !== 1 ? 's' : ''} / em andamento</div>
+        <div class="kpi-sub">pendente${abertos!==1?'s':''} / em andamento</div>
       </div>
       <div class="kpi" style="--kpi-color:var(--sub)">
         <div class="kpi-label">Última Execução</div>
-        <div class="kpi-value" style="font-size:16px;padding-top:4px">${
-          ultima ? fmtDate(ultima.data, {day:'2-digit',month:'short',year:'numeric'}) : '—'
-        }</div>
-        <div class="kpi-sub">${ultima ? ultima.tipo : '—'}</div>
+        <div class="kpi-value" style="font-size:16px;padding-top:4px">${ultima?fmtDate(ultima.data,{day:'2-digit',month:'short',year:'numeric'}):'—'}</div>
+        <div class="kpi-sub">${ultima?ultima.tipo:'—'}</div>
       </div>
     </div>
 
-    <!-- Filtros -->
     <div class="filters-row">
       <label>Tipo GM</label>
       <select id="fTipo">
         <option value="">Todos</option>
-        ${tipos.map(t => `<option value="${t}">${t}</option>`).join('')}
+        ${tipos.map(t=>`<option value="${t}">${t}</option>`).join('')}
       </select>
       <div class="filter-sep"></div>
       <label>De</label>
@@ -1345,47 +827,33 @@ function renderMain() {
       <button class="btn-ghost"  onclick="clearFilters()">Limpar</button>
     </div>
 
-    <!-- Timeline container -->
     <div id="tl-wrap"></div>
   `;
 
   renderTimeline();
 }
 
-// ════════════════════════════════════════════════════════════
-//  RENDER TIMELINE
-// ════════════════════════════════════════════════════════════
 function renderTimeline() {
-  const wrap  = document.getElementById('tl-wrap');
-  const sorted = [...filtered].sort((a, b) => b.data.localeCompare(a.data));
+  const wrap   = document.getElementById('tl-wrap');
+  const sorted = [...filtered].sort((a,b)=>b.data.localeCompare(a.data));
 
   if (!sorted.length) {
-    wrap.innerHTML = `<div class="empty">
-      <div class="empty-icon">🔍</div>
-      <div class="empty-title">Nenhum registro</div>
-      <div class="empty-sub">Tente ajustar ou limpar os filtros.</div>
-    </div>`;
+    wrap.innerHTML = `<div class="empty"><div class="empty-icon">🔍</div><div class="empty-title">Nenhum registro</div><div class="empty-sub">Tente ajustar ou limpar os filtros.</div></div>`;
     return;
   }
 
-  // agrupa por ano
   const byYear = {};
-  sorted.forEach(r => {
-    const yr = r.data.substring(0, 4);
-    if (!byYear[yr]) byYear[yr] = [];
-    byYear[yr].push(r);
-  });
+  sorted.forEach(r => { const yr=r.data.substring(0,4); if (!byYear[yr]) byYear[yr]=[]; byYear[yr].push(r); });
 
   wrap.innerHTML = Object.keys(byYear).sort((a,b)=>b-a).map(yr => {
     const items = byYear[yr];
-    const rows = items.map((r, i) => {
+    const rows = items.map((r,i) => {
       const dt   = safeDate(r.data);
-      const day  = dt ? dt.toLocaleDateString('pt-BR', { day: '2-digit' }) : 'Data Inválida';
-      const mon  = dt ? dt.toLocaleDateString('pt-BR', { month: 'short' }) : 'Data Inválida';
+      const day  = dt ? dt.toLocaleDateString('pt-BR',{day:'2-digit'}) : '--';
+      const mon  = dt ? dt.toLocaleDateString('pt-BR',{month:'short'}) : '--';
       const st   = getStatus(r.status);
-      const idx  = ALL_FLAT.findIndex(x => x.ordem === r.ordem);
-      const last = i === items.length - 1;
-
+      const idx  = ALL_FLAT.findIndex(x=>x.ordem===r.ordem);
+      const last = i===items.length-1;
       return `
       <div class="tl-item">
         <div class="tl-date">
@@ -1394,7 +862,7 @@ function renderTimeline() {
         </div>
         <div class="tl-spine">
           <div class="tl-node" style="color:${st.dot};background:${st.dot}"></div>
-          ${!last ? '<div class="tl-line"></div>' : ''}
+          ${!last?'<div class="tl-line"></div>':''}
         </div>
         <div class="tl-card" onclick="openDetail(${idx})">
           <div class="tl-card-head">
@@ -1409,78 +877,34 @@ function renderTimeline() {
           </div>
           <div class="tl-desc">${r.textoSap}</div>
           <div class="tl-fields">
-            <div>
-              <div class="tl-field-label">Horímetro</div>
-              <div class="tl-field-value hi">${r.hor.toLocaleString('pt-BR')} h</div>
-            </div>
-            <div>
-              <div class="tl-field-label">Data</div>
-              <div class="tl-field-value">${fmtDate(r.data,{day:'2-digit',month:'long',year:'numeric'})}</div>
-            </div>
-            <div>
-              <div class="tl-field-label">Frota</div>
-              <div class="tl-field-value">${r.frota}</div>
-            </div>
-            <div>
-              <div class="tl-field-label">Simulador</div>
-              <div class="tl-field-value">${r.simul}</div>
-            </div>
+            <div><div class="tl-field-label">Horímetro</div><div class="tl-field-value hi">${r.hor.toLocaleString('pt-BR')} h</div></div>
+            <div><div class="tl-field-label">Data</div><div class="tl-field-value">${fmtDate(r.data,{day:'2-digit',month:'long',year:'numeric'})}</div></div>
+            <div><div class="tl-field-label">Frota</div><div class="tl-field-value">${r.frota}</div></div>
+            <div><div class="tl-field-label">Simulador</div><div class="tl-field-value">${r.simul}</div></div>
           </div>
         </div>
       </div>`;
     }).join('');
-
-    return `<div class="tl-group">
-      <div class="tl-section-title">${yr}</div>
-      ${rows}
-    </div>`;
+    return `<div class="tl-group"><div class="tl-section-title">${yr}</div>${rows}</div>`;
   }).join('');
 }
 
-// ════════════════════════════════════════════════════════════
-//  DETAIL PANEL
-// ════════════════════════════════════════════════════════════
 function openDetail(idx) {
   const r  = ALL_FLAT[idx];
   const st = getStatus(r.status);
-  const dt = fmtDate(r.data, { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
-
-  document.getElementById('d-kicker').textContent  = 'OS #' + r.ordem;
-  document.getElementById('d-title').textContent   = r.tipo;
-  document.getElementById('d-equip').textContent   = r.equip + ' · ' + r.frota;
-  document.getElementById('d-os').textContent      = r.textoSap;
-  document.getElementById('d-status').innerHTML    = `
-    <div class="detail-status" style="background:${st.bg};color:${st.color};border:1px solid ${st.br}">
-      <div class="tl-status-dot" style="background:${st.dot}"></div>
-      ${r.status}
-    </div>`;
-  document.getElementById('d-grid').innerHTML = `
-    <div>
-      <div class="detail-field-label">Horímetro</div>
-      <div class="detail-field-value hi">${r.hor.toLocaleString('pt-BR')} h</div>
-    </div>
-    <div>
-      <div class="detail-field-label">Data de Execução</div>
-      <div class="detail-field-value">${dt}</div>
-    </div>
-    <div>
-      <div class="detail-field-label">Equipamento</div>
-      <div class="detail-field-value">${r.equip}</div>
-    </div>
-    <div>
-      <div class="detail-field-label">Frota</div>
-      <div class="detail-field-value">${r.frota}</div>
-    </div>
-    <div>
-      <div class="detail-field-label">Cód. Simulador</div>
-      <div class="detail-field-value">${r.simul}</div>
-    </div>
-    <div>
-      <div class="detail-field-label">Tipo de GM</div>
-      <div class="detail-field-value">${r.tipo}</div>
-    </div>
-  `;
-
+  const dt = fmtDate(r.data,{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+  document.getElementById('d-kicker').textContent = 'OS #' + r.ordem;
+  document.getElementById('d-title').textContent  = r.tipo;
+  document.getElementById('d-equip').textContent  = r.equip + ' · ' + r.frota;
+  document.getElementById('d-os').textContent     = r.textoSap;
+  document.getElementById('d-status').innerHTML   = `<div class="detail-status" style="background:${st.bg};color:${st.color};border:1px solid ${st.br}"><div class="tl-status-dot" style="background:${st.dot}"></div>${r.status}</div>`;
+  document.getElementById('d-grid').innerHTML     = `
+    <div><div class="detail-field-label">Horímetro</div><div class="detail-field-value hi">${r.hor.toLocaleString('pt-BR')} h</div></div>
+    <div><div class="detail-field-label">Data de Execução</div><div class="detail-field-value">${dt}</div></div>
+    <div><div class="detail-field-label">Equipamento</div><div class="detail-field-value">${r.equip}</div></div>
+    <div><div class="detail-field-label">Frota</div><div class="detail-field-value">${r.frota}</div></div>
+    <div><div class="detail-field-label">Cód. Simulador</div><div class="detail-field-value">${r.simul}</div></div>
+    <div><div class="detail-field-label">Tipo de GM</div><div class="detail-field-value">${r.tipo}</div></div>`;
   document.getElementById('detail-panel').classList.add('open');
   document.getElementById('overlay').classList.add('show');
 }
@@ -1490,9 +914,6 @@ function closeDetail() {
   document.getElementById('overlay').classList.remove('show');
 }
 
-// ════════════════════════════════════════════════════════════
-//  INIT
-// ════════════════════════════════════════════════════════════
 loadData();
 </script>
 </body>
