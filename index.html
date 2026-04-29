@@ -1062,7 +1062,7 @@ function toggleTheme() {
 (function () {
   const s = localStorage.getItem('gm-theme');
   const sys = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  if (s === 'dark' {
+  if (s === 'dark' || (!s && sys)) {
     document.body.classList.add('dark');
     document.getElementById('theme-knob').textContent = '☀️';
   }
@@ -1361,8 +1361,8 @@ function renderTimeline() {
     const items = byYear[yr];
     const rows = items.map((r, i) => {
       const dt   = safeDate(r.data);
-      const day  = dt ? dt.toLocaleDateString('pt-BR', { day: '2-digit' }) : 'Data Inválida';
-      const mon  = dt ? dt.toLocaleDateString('pt-BR', { month: 'short' }) : 'Data Inválida';
+      const day  = dt ? dt.toLocaleDateString('pt-BR', { day: '2-digit' }) : '--';
+      const mon  = dt ? dt.toLocaleDateString('pt-BR', { month: 'short' }) : '---';
       const st   = STATUS_CFG[r.status] || STATUS_CFG['Encerrada'];
       const idx  = ALL_FLAT.findIndex(x => x.ordem === r.ordem);
       const last = i === items.length - 1;
