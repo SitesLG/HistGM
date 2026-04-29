@@ -62,11 +62,7 @@ body {
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
 
-/* ══════════════════════════════════════
-   TOOLTIP CUSTOMIZADO (data-tip)
-══════════════════════════════════════ */
 [data-tip] { position: relative; }
-
 [data-tip]::before {
   content: attr(data-tip);
   position: absolute;
@@ -112,7 +108,6 @@ body {
   transform: translateX(-50%) translateY(0);
 }
 
-/* KPI com filtro ativo */
 .kpi.filter-active {
   border-color: var(--warn) !important;
   box-shadow: 0 0 0 3px var(--warn-br);
@@ -121,6 +116,25 @@ body {
   content: ' · filtro ativo';
   color: var(--warn);
   font-weight: 700;
+}
+
+/* ══════════════════════════════════════
+   FORWARDER ICON STYLES
+══════════════════════════════════════ */
+.forwarder-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+.forwarder-icon svg {
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.18));
+  transition: transform .2s;
+}
+.equip-btn:hover .forwarder-icon svg,
+.ultima-gm-card:hover .forwarder-icon svg,
+.tl-card:hover .forwarder-icon svg {
+  transform: scale(1.08) translateX(2px);
 }
 
 /* ══════════════════════════════════════
@@ -234,9 +248,9 @@ body {
 .equip-btn:hover { background: var(--bg); border-color: var(--border); }
 .equip-btn.active { background: var(--accent-bg); border-color: var(--accent-br); color: var(--accent); }
 .equip-icon {
-  width: 32px; height: 32px; border-radius: 8px; background: var(--bg);
+  width: 40px; height: 32px; border-radius: 8px; background: var(--bg);
   border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
-  font-size: 15px; flex-shrink: 0; transition: all .16s;
+  flex-shrink: 0; transition: all .16s; overflow: hidden; padding: 2px 4px;
 }
 .equip-btn.active .equip-icon { background: var(--accent-bg); border-color: var(--accent-br); }
 .equip-meta { flex: 1; min-width: 0; }
@@ -254,9 +268,9 @@ body {
 .ultima-gm-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); }
 .ultima-gm-card:hover { border-color: var(--accent); transform: translateY(-2px); }
 .ultima-gm-icon {
-  width: 52px; height: 52px; border-radius: 12px; background: var(--accent-bg);
+  width: 72px; height: 52px; border-radius: 12px; background: var(--accent-bg);
   border: 1px solid var(--accent-br); display: flex; align-items: center; justify-content: center;
-  font-size: 22px; flex-shrink: 0;
+  flex-shrink: 0; overflow: hidden; padding: 4px 6px;
 }
 .ultima-gm-info { flex: 1; min-width: 0; }
 .ultima-gm-label { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--sub); margin-bottom: 4px; }
@@ -277,9 +291,9 @@ body {
 
 .equip-header { display: flex; align-items: flex-start; gap: 18px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
 .equip-header-icon {
-  width: 56px; height: 56px; border-radius: 14px; background: var(--accent-bg);
+  width: 80px; height: 56px; border-radius: 14px; background: var(--accent-bg);
   border: 1px solid var(--accent-br); display: flex; align-items: center; justify-content: center;
-  font-size: 26px; flex-shrink: 0;
+  flex-shrink: 0; overflow: hidden; padding: 4px 8px;
 }
 .equip-header-info h1 { font-size: 22px; font-weight: 700; letter-spacing: -.4px; line-height: 1.15; font-family: 'JetBrains Mono', monospace; }
 .equip-header-info p { font-size: 13px; color: var(--sub); margin-top: 4px; }
@@ -408,6 +422,14 @@ body {
 .detail-field-value { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text); }
 .detail-field-value.hi { font-size: 18px; font-weight: 600; color: var(--accent); }
 
+/* ── detail panel forwarder banner ── */
+.detail-forwarder-banner {
+  width: 100%; height: 80px; background: var(--accent-bg);
+  border: 1px solid var(--accent-br); border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px; overflow: hidden;
+}
+
 /* ══════════════════════════════════════
    EMPTY
 ══════════════════════════════════════ */
@@ -430,15 +452,15 @@ body {
   .sidebar { position: static; height: auto; padding: 12px 12px 8px; border-right: none; border-bottom: 1px solid var(--border); max-height: 240px; overflow-y: auto; }
   .sidebar-label { margin-bottom: 6px; }
   .equip-btn { padding: 8px 10px; }
-  .equip-icon { width: 28px; height: 28px; font-size: 13px; }
+  .equip-icon { width: 36px; height: 28px; }
   .equip-name { font-size: 12px; }
   .equip-ct { font-size: 10px; }
   .equip-header { gap: 12px; padding-bottom: 16px; }
-  .equip-header-icon { width: 42px; height: 42px; font-size: 20px; border-radius: 10px; }
+  .equip-header-icon { width: 64px; height: 44px; border-radius: 10px; }
   .equip-header-info h1 { font-size: 16px; }
   .equip-header-info p { font-size: 11px; }
   .ultima-gm-card { padding: 14px 16px; gap: 12px; flex-wrap: wrap; }
-  .ultima-gm-icon { width: 40px; height: 40px; font-size: 18px; }
+  .ultima-gm-icon { width: 56px; height: 40px; }
   .ultima-gm-tipo { font-size: 13px; }
   .ultima-gm-meta { gap: 8px; }
   .ultima-gm-meta span { font-size: 10px; }
@@ -496,7 +518,32 @@ body {
   </aside>
   <main class="main" id="main">
     <div class="empty">
-      <div class="empty-icon">🔧</div>
+      <div class="empty-icon" style="display:flex;justify-content:center;margin-bottom:14px;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 60" width="90" height="55" style="opacity:.4">
+          <!-- Komatsu Forwarder - large welcome illustration -->
+          <rect x="4" y="28" width="50" height="16" rx="3" fill="#c05c20"/>
+          <rect x="10" y="18" width="3.5" height="12" rx="1.5" fill="#922b21"/>
+          <rect x="24" y="18" width="3.5" height="12" rx="1.5" fill="#922b21"/>
+          <rect x="38" y="18" width="3.5" height="12" rx="1.5" fill="#922b21"/>
+          <ellipse cx="27" cy="19" rx="21" ry="5" fill="#8B6914" opacity=".85"/>
+          <ellipse cx="27" cy="16" rx="16" ry="4" fill="#A0792A" opacity=".8"/>
+          <rect x="54" y="32" width="6" height="9" rx="1.5" fill="#7f8c8d"/>
+          <rect x="60" y="24" width="38" height="18" rx="3" fill="#c05c20"/>
+          <rect x="88" y="12" width="22" height="16" rx="3" fill="#c05c20"/>
+          <rect x="91" y="15" width="15" height="10" rx="1.5" fill="#aed6f1" opacity=".85"/>
+          <rect x="91" y="15" width="6" height="3.5" rx="1" fill="white" opacity=".4"/>
+          <line x1="65" y1="24" x2="80" y2="8" stroke="#922b21" stroke-width="3.5" stroke-linecap="round"/>
+          <line x1="80" y1="8" x2="96" y2="15" stroke="#922b21" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="96" cy="15" r="4" fill="#7f8c8d"/>
+          <rect x="60" y="32" width="38" height="4" fill="#f39c12" opacity=".9"/>
+          <rect x="88" y="19" width="22" height="3" fill="#f39c12" opacity=".9"/>
+          <!-- wheels -->
+          <circle cx="14" cy="46" r="8" fill="#2c3e50"/><circle cx="14" cy="46" r="3.5" fill="#95a5a6"/><circle cx="14" cy="44.5" r="1.5" fill="white" opacity=".25"/>
+          <circle cx="32" cy="46" r="8" fill="#2c3e50"/><circle cx="32" cy="46" r="3.5" fill="#95a5a6"/><circle cx="32" cy="44.5" r="1.5" fill="white" opacity=".25"/>
+          <circle cx="70" cy="46" r="8" fill="#2c3e50"/><circle cx="70" cy="46" r="3.5" fill="#95a5a6"/><circle cx="70" cy="44.5" r="1.5" fill="white" opacity=".25"/>
+          <circle cx="88" cy="46" r="8" fill="#2c3e50"/><circle cx="88" cy="46" r="3.5" fill="#95a5a6"/><circle cx="88" cy="44.5" r="1.5" fill="white" opacity=".25"/>
+        </svg>
+      </div>
       <div class="empty-title">Selecione um equipamento</div>
       <div class="empty-sub">Escolha um equipamento na lista ao lado<br>para ver o histórico completo de manutenções.</div>
     </div>
@@ -518,6 +565,80 @@ body {
 
 <script>
 const JSON_URL = 'https://raw.githubusercontent.com/SitesLG/HistGM/refs/heads/main/dados.json';
+
+// ── SVG do Forwarder Komatsu Vermelho ──
+// Usado em todos os ícones de equipamento no dashboard
+const FORWARDER_SVG_SM = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 44" width="100%" height="100%" style="display:block">
+  <!-- log bunk rear frame -->
+  <rect x="2" y="22" width="32" height="12" rx="2.5" fill="#c0392b"/>
+  <!-- bunk stakes -->
+  <rect x="6"  y="14" width="3" height="10" rx="1.2" fill="#922b21"/>
+  <rect x="17" y="14" width="3" height="10" rx="1.2" fill="#922b21"/>
+  <rect x="28" y="14" width="3" height="10" rx="1.2" fill="#922b21"/>
+  <!-- logs on bunk -->
+  <ellipse cx="18" cy="15.5" rx="15" ry="4.2" fill="#8B6914" opacity=".88"/>
+  <ellipse cx="18" cy="12.5" rx="11" ry="3" fill="#A0792A" opacity=".8"/>
+  <!-- articulation hinge -->
+  <rect x="34" y="24" width="5" height="8" rx="1.2" fill="#7f8c8d"/>
+  <!-- front frame -->
+  <rect x="39" y="19" width="28" height="14" rx="2.5" fill="#c0392b"/>
+  <!-- Komatsu yellow stripe on front frame -->
+  <rect x="39" y="27" width="28" height="3" fill="#f39c12" opacity=".9"/>
+  <!-- cabin -->
+  <rect x="60" y="10" width="17" height="14" rx="2.5" fill="#c0392b"/>
+  <!-- cabin glass -->
+  <rect x="62" y="12" width="12" height="9" rx="1.5" fill="#aed6f1" opacity=".88"/>
+  <!-- glass highlight -->
+  <rect x="62" y="12" width="5" height="3" rx=".8" fill="white" opacity=".38"/>
+  <!-- Komatsu yellow stripe on cabin -->
+  <rect x="60" y="17" width="17" height="2.5" fill="#f39c12" opacity=".9"/>
+  <!-- boom arm -->
+  <line x1="45" y1="19" x2="58" y2="5" stroke="#922b21" stroke-width="3" stroke-linecap="round"/>
+  <line x1="58" y1="5" x2="70" y2="11" stroke="#922b21" stroke-width="2.2" stroke-linecap="round"/>
+  <!-- grapple head -->
+  <circle cx="70" cy="11" r="3.2" fill="#7f8c8d"/>
+  <circle cx="70" cy="11" r="1.5" fill="#95a5a6"/>
+  <!-- rear wheels -->
+  <circle cx="10" cy="36" r="6.5" fill="#2c3e50"/><circle cx="10" cy="36" r="3" fill="#7f8c8d"/><circle cx="10" cy="34.8" r="1.2" fill="white" opacity=".28"/>
+  <circle cx="24" cy="36" r="6.5" fill="#2c3e50"/><circle cx="24" cy="36" r="3" fill="#7f8c8d"/><circle cx="24" cy="34.8" r="1.2" fill="white" opacity=".28"/>
+  <!-- front wheels -->
+  <circle cx="48" cy="36" r="6.5" fill="#2c3e50"/><circle cx="48" cy="36" r="3" fill="#7f8c8d"/><circle cx="48" cy="34.8" r="1.2" fill="white" opacity=".28"/>
+  <circle cx="62" cy="36" r="6.5" fill="#2c3e50"/><circle cx="62" cy="36" r="3" fill="#7f8c8d"/><circle cx="62" cy="34.8" r="1.2" fill="white" opacity=".28"/>
+</svg>`;
+
+// Larger version for header and detail panel
+const FORWARDER_SVG_LG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 56" width="100%" height="100%" style="display:block">
+  <!-- log bunk rear frame -->
+  <rect x="2" y="28" width="40" height="15" rx="3" fill="#c0392b"/>
+  <!-- bunk stakes -->
+  <rect x="7"  y="17" width="3.5" height="13" rx="1.5" fill="#922b21"/>
+  <rect x="21" y="17" width="3.5" height="13" rx="1.5" fill="#922b21"/>
+  <rect x="35" y="17" width="3.5" height="13" rx="1.5" fill="#922b21"/>
+  <!-- logs -->
+  <ellipse cx="22" cy="19" rx="19" ry="5" fill="#8B6914" opacity=".88"/>
+  <ellipse cx="22" cy="15" rx="14" ry="3.8" fill="#A0792A" opacity=".8"/>
+  <!-- articulation -->
+  <rect x="42" y="30" width="6" height="10" rx="1.5" fill="#7f8c8d"/>
+  <!-- front frame -->
+  <rect x="48" y="24" width="36" height="18" rx="3" fill="#c0392b"/>
+  <rect x="48" y="34" width="36" height="4" fill="#f39c12" opacity=".9"/>
+  <!-- cabin -->
+  <rect x="76" y="13" width="22" height="17" rx="3" fill="#c0392b"/>
+  <rect x="79" y="16" width="15" height="11" rx="2" fill="#aed6f1" opacity=".88"/>
+  <rect x="79" y="16" width="6" height="4" rx="1" fill="white" opacity=".38"/>
+  <rect x="76" y="22" width="22" height="3" fill="#f39c12" opacity=".9"/>
+  <!-- boom -->
+  <line x1="56" y1="24" x2="73" y2="7" stroke="#922b21" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="73" y1="7" x2="88" y2="14" stroke="#922b21" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="88" cy="14" r="4" fill="#7f8c8d"/>
+  <circle cx="88" cy="14" r="1.8" fill="#95a5a6"/>
+  <!-- rear wheels -->
+  <circle cx="12" cy="46" r="8" fill="#2c3e50"/><circle cx="12" cy="46" r="3.5" fill="#7f8c8d"/><circle cx="12" cy="44.5" r="1.5" fill="white" opacity=".25"/>
+  <circle cx="30" cy="46" r="8" fill="#2c3e50"/><circle cx="30" cy="46" r="3.5" fill="#7f8c8d"/><circle cx="30" cy="44.5" r="1.5" fill="white" opacity=".25"/>
+  <!-- front wheels -->
+  <circle cx="60" cy="46" r="8" fill="#2c3e50"/><circle cx="60" cy="46" r="3.5" fill="#7f8c8d"/><circle cx="60" cy="44.5" r="1.5" fill="white" opacity=".25"/>
+  <circle cx="78" cy="46" r="8" fill="#2c3e50"/><circle cx="78" cy="46" r="3.5" fill="#7f8c8d"/><circle cx="78" cy="44.5" r="1.5" fill="white" opacity=".25"/>
+</svg>`;
 
 const COL = {
   ordem:'ORDEM', equip:'equipamento', frota:'frota', simul:'codigo_simulador',
@@ -550,7 +671,8 @@ let activeEq   = null;
 let filtered   = [];
 let filterAbertosAtivo = false;
 
-const ICONS = { 'F-FWX': '🚜', 'F-HVE': '🏗️' };
+// Todos os equipamentos usam o ícone do forwarder Komatsu
+const ICONS = {};
 const STATUS_CFG = {
   'LIB':     { color:'var(--warn)',  bg:'var(--warn-bg)',  br:'var(--warn-br)',  dot:'#c49a38' },
   'ENT':     { color:'var(--green)', bg:'var(--green-bg)', br:'var(--green-br)', dot:'#38a862' },
@@ -611,7 +733,7 @@ function groupByEquip(rows) {
   const map = {};
   rows.forEach(r => { if (!map[r.equip]) map[r.equip]=[]; map[r.equip].push(r); });
   return Object.entries(map).sort((a,b)=>a[0].localeCompare(b[0]))
-    .map(([name, items]) => ({ name, icon: ICONS[name.substring(0,5)] || '⚙️', items }));
+    .map(([name, items]) => ({ name, items }));
 }
 
 async function loadData() {
@@ -665,7 +787,12 @@ function renderSidebarList(filterText) {
     any = true;
     const btn = document.createElement('button');
     btn.className = 'equip-btn' + (i===activeEq?' active':'');
-    btn.innerHTML = `<div class="equip-icon">${eq.icon}</div><div class="equip-meta"><div class="equip-name">${eq.name}</div><div class="equip-ct">${eq.items.length} manutenç${eq.items.length!==1?'ões':'ão'}</div></div>`;
+    btn.innerHTML = `
+      <div class="equip-icon forwarder-icon">${FORWARDER_SVG_SM}</div>
+      <div class="equip-meta">
+        <div class="equip-name">${eq.name}</div>
+        <div class="equip-ct">${eq.items.length} manutenç${eq.items.length!==1?'ões':'ão'}</div>
+      </div>`;
     btn.onclick = () => selectEquip(i);
     list.appendChild(btn);
   });
@@ -716,7 +843,6 @@ function clearFilters() {
   renderTimeline();
 }
 
-// ── Toggle filtro Em Aberto ──
 function toggleFilterAbertos() {
   if (filterAbertosAtivo) {
     filterAbertosAtivo = false;
@@ -755,7 +881,7 @@ function renderMain() {
 
   document.getElementById('main').innerHTML = `
     <div class="equip-header">
-      <div class="equip-header-icon">${eq.icon}</div>
+      <div class="equip-header-icon forwarder-icon">${FORWARDER_SVG_LG}</div>
       <div class="equip-header-info">
         <h1>${eq.name}</h1>
         <p>Histórico completo de grandes manutenções · ${src.length} registro${src.length!==1?'s':''}</p>
@@ -764,7 +890,7 @@ function renderMain() {
 
     ${ultima ? `
     <div class="ultima-gm-card" onclick="openDetail(${ALL_FLAT.findIndex(x=>x.ordem===ultima.ordem)})">
-      <div class="ultima-gm-icon">🔧</div>
+      <div class="ultima-gm-icon forwarder-icon">${FORWARDER_SVG_SM}</div>
       <div class="ultima-gm-info">
         <div class="ultima-gm-label">Última GM Executada</div>
         <div class="ultima-gm-tipo">${ultima.tipo}</div>
@@ -897,7 +1023,15 @@ function openDetail(idx) {
   document.getElementById('d-title').textContent  = r.tipo;
   document.getElementById('d-equip').textContent  = r.equip + ' · ' + r.frota;
   document.getElementById('d-os').textContent     = r.textoSap;
-  document.getElementById('d-status').innerHTML   = `<div class="detail-status" style="background:${st.bg};color:${st.color};border:1px solid ${st.br}"><div class="tl-status-dot" style="background:${st.dot}"></div>${r.status}</div>`;
+  document.getElementById('d-status').innerHTML   = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
+      <div class="detail-status" style="background:${st.bg};color:${st.color};border:1px solid ${st.br};margin-bottom:0">
+        <div class="tl-status-dot" style="background:${st.dot}"></div>${r.status}
+      </div>
+      <div class="detail-forwarder-banner" style="flex:1;min-width:140px;max-width:200px;height:56px;margin-bottom:0;">
+        ${FORWARDER_SVG_SM}
+      </div>
+    </div>`;
   document.getElementById('d-grid').innerHTML     = `
     <div><div class="detail-field-label">Horímetro</div><div class="detail-field-value hi">${r.hor.toLocaleString('pt-BR')} h</div></div>
     <div><div class="detail-field-label">Data de Execução</div><div class="detail-field-value">${dt}</div></div>
