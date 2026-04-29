@@ -180,34 +180,6 @@ body {
   padding: 0 10px;
   margin-bottom: 8px;
 }
-/* ── Filtro de busca na sidebar ── */
-.sidebar-search {
-  position: relative;
-  margin-bottom: 8px;
-}
-.sidebar-search input {
-  width: 100%;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  color: var(--text);
-  border-radius: 8px;
-  padding: 7px 10px 7px 30px;
-  font-family: 'Outfit', sans-serif;
-  font-size: 12px;
-  outline: none;
-  transition: border-color .18s, background .3s;
-}
-.sidebar-search input::placeholder { color: var(--sub); }
-.sidebar-search input:focus { border-color: var(--accent); }
-.sidebar-search-icon {
-  position: absolute;
-  left: 9px; top: 50%;
-  transform: translateY(-50%);
-  font-size: 12px;
-  color: var(--sub);
-  pointer-events: none;
-}
-
 .equip-btn {
   display: flex;
   align-items: center;
@@ -247,90 +219,9 @@ body {
 .equip-ct { font-size: 11px; color: var(--sub); margin-top: 1px; }
 .equip-btn.active .equip-ct { color: var(--accent); opacity: .75; }
 
-/* ── Card Última GM Executada ── */
-.ultima-gm-card {
-  background: var(--paper);
-  border: 1px solid var(--accent-br);
-  border-radius: var(--radius);
-  padding: 20px 24px;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  transition: border-color .18s, transform .18s, background .3s;
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-}
-.ultima-gm-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: var(--accent);
-}
-.ultima-gm-card:hover { border-color: var(--accent); transform: translateY(-2px); }
-.ultima-gm-icon {
-  width: 52px; height: 52px;
-  border-radius: 12px;
-  background: var(--accent-bg);
-  border: 1px solid var(--accent-br);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 22px;
-  flex-shrink: 0;
-}
-.ultima-gm-info { flex: 1; min-width: 0; }
-.ultima-gm-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--sub);
-  margin-bottom: 4px;
-}
-.ultima-gm-tipo {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--accent);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.ultima-gm-meta {
-  display: flex;
-  gap: 16px;
-  margin-top: 6px;
-  flex-wrap: wrap;
-}
-.ultima-gm-meta span {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  color: var(--sub);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.ultima-gm-meta .hi { color: var(--accent); font-weight: 600; }
-.ultima-gm-badge {
-  flex-shrink: 0;
-  background: var(--accent-bg);
-  color: var(--accent);
-  border: 1px solid var(--accent-br);
-  border-radius: 20px;
-  padding: 4px 12px;
-  font-size: 11px;
-  font-weight: 600;
-  font-family: 'JetBrains Mono', monospace;
-  white-space: nowrap;
-}
-
-/* ── Separador sidebar ── */
-.sidebar-sep {
-  height: 1px;
-  background: var(--border);
-  margin: 10px 0;
-}
-
-
+/* ══════════════════════════════════════
+   MAIN CONTENT
+══════════════════════════════════════ */
 .main {
   padding: 32px 40px;
   display: flex;
@@ -792,10 +683,83 @@ body {
    RESPONSIVE
 ══════════════════════════════════════ */
 @media (max-width: 860px) {
+  /* Layout base */
   .layout { grid-template-columns: 1fr; }
-  .sidebar { position: static; height: auto; flex-direction: row; flex-wrap: wrap; top: 0; }
-  .main { padding: 20px 16px; }
-  .detail-panel { width: 100%; }
+  .main { padding: 16px 14px; gap: 18px; }
+  .detail-panel { width: 100%; left: 0; }
+
+  /* Header compacto */
+  .header { padding: 10px 14px; gap: 8px; }
+  .header-sub { display: none; }
+  .header-sep { display: none; }
+  .logo { font-size: 13px; }
+  #clock { display: none; }
+
+  /* Sidebar vira barra horizontal compacta */
+  .sidebar {
+    position: static;
+    height: auto;
+    flex-direction: column;
+    padding: 12px 12px 8px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    max-height: 240px;
+    overflow-y: auto;
+  }
+  .sidebar-label { margin-bottom: 6px; }
+  .equip-btn { padding: 8px 10px; }
+  .equip-icon { width: 28px; height: 28px; font-size: 13px; }
+  .equip-name { font-size: 12px; }
+  .equip-ct { font-size: 10px; }
+
+  /* Cabeçalho do equipamento */
+  .equip-header { gap: 12px; padding-bottom: 16px; }
+  .equip-header-icon { width: 42px; height: 42px; font-size: 20px; border-radius: 10px; }
+  .equip-header-info h1 { font-size: 16px; }
+  .equip-header-info p { font-size: 11px; }
+
+  /* Card Última GM */
+  .ultima-gm-card { padding: 14px 16px; gap: 12px; flex-wrap: wrap; }
+  .ultima-gm-icon { width: 40px; height: 40px; font-size: 18px; }
+  .ultima-gm-tipo { font-size: 13px; }
+  .ultima-gm-meta { gap: 8px; }
+  .ultima-gm-meta span { font-size: 10px; }
+  .ultima-gm-badge { font-size: 10px; padding: 3px 9px; }
+
+  /* KPIs — 2 colunas no mobile */
+  .kpis { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .kpi { padding: 14px 14px; }
+  .kpi-value { font-size: 22px; }
+  .kpi-label { font-size: 9px; margin-bottom: 6px; }
+  .kpi-sub { font-size: 10px; }
+
+  /* Filtros empilhados */
+  .filters-row { flex-direction: column; align-items: stretch; gap: 8px; padding: 12px; }
+  .filters-row label { margin-bottom: -4px; }
+  .filters-row select,
+  .filters-row input[type="date"] { width: 100%; padding: 8px 10px; font-size: 13px; }
+  .filter-sep { display: none; }
+  .btn-accent, .btn-ghost { width: 100%; padding: 9px; font-size: 13px; text-align: center; }
+
+  /* Timeline */
+  .tl-item { grid-template-columns: 54px 16px 1fr; gap: 0 10px; }
+  .tl-date-day { font-size: 16px; }
+  .tl-date-rest { font-size: 9px; }
+  .tl-card { padding: 14px 14px; }
+  .tl-desc { font-size: 12px; padding: 8px 10px; }
+  .tl-fields { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tl-field-value { font-size: 12px; }
+  .tl-field-value.hi { font-size: 14px; }
+
+  /* Detail panel */
+  .detail-panel { padding: 24px 18px; }
+  .detail-title { font-size: 17px; }
+  .detail-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+}
+
+@media (max-width: 420px) {
+  .kpis { grid-template-columns: 1fr; }
+  .tl-item { grid-template-columns: 44px 14px 1fr; gap: 0 8px; }
 }
 </style>
 </head>
@@ -855,7 +819,7 @@ body {
 // ════════════════════════════════════════════════════════════
 //  CONFIG — cole sua URL aqui quando tiver o JSON real
 // ════════════════════════════════════════════════════════════
-const JSON_URL = 'https://raw.githubusercontent.com/SitesLG/HistGM/refs/heads/main/dados.json';
+const JSON_URL = '';
 
 const COL = {
   ordem:     'ORDEM',
@@ -907,6 +871,26 @@ const STATUS_CFG = {
   'Em andamento': { color: 'var(--blue)',  bg: 'var(--blue-bg)',  br: 'var(--blue-br)',  dot: '#4d84cc' },
   'Pendente':     { color: 'var(--warn)',  bg: 'var(--warn-bg)',  br: 'var(--warn-br)',  dot: '#c49a38' },
 };
+
+// ════════════════════════════════════════════════════════════
+//  HELPER — DATA SEGURA
+// ════════════════════════════════════════════════════════════
+function safeDate(dateStr) {
+  if (!dateStr || dateStr.length < 8) return null;
+  // Normaliza: aceita YYYY-MM-DD ou DD/MM/YYYY ou timestamp ISO
+  let iso = dateStr.substring(0, 10);
+  // Se vier no formato DD/MM/YYYY, converte
+  if (iso.includes('/')) {
+    const [d, m, y] = iso.split('/');
+    iso = `${y}-${m}-${d}`;
+  }
+  const dt = new Date(iso + 'T12:00:00');
+  return isNaN(dt.getTime()) ? null : dt;
+}
+function fmtDate(dateStr, opts) {
+  const dt = safeDate(dateStr);
+  return dt ? dt.toLocaleDateString('pt-BR', opts) : 'Data inválida';
+}
 
 // ════════════════════════════════════════════════════════════
 //  RELÓGIO
@@ -999,29 +983,34 @@ async function loadData() {
 // ════════════════════════════════════════════════════════════
 //  SIDEBAR
 // ════════════════════════════════════════════════════════════
-function renderSidebar(filterText) {
+function renderSidebar() {
   const sb = document.getElementById('sidebar');
-  const currentFilter = filterText !== undefined ? filterText :
-    (document.getElementById('sidebar-filter') ? document.getElementById('sidebar-filter').value : '');
 
-  sb.innerHTML = `
-    <div class="sidebar-label">Equipamentos</div>
-    <div class="sidebar-search">
-      <span class="sidebar-search-icon">🔍</span>
-      <input
-        id="sidebar-filter"
-        type="text"
-        placeholder="Buscar equipamento..."
-        value="${currentFilter}"
-        oninput="renderSidebar(this.value)"
-      >
-    </div>
-    <div class="sidebar-sep"></div>
-  `;
+  // Only rebuild the static structure once
+  if (!document.getElementById('sidebar-filter')) {
+    sb.innerHTML = `
+      <div class="sidebar-label">Equipamentos</div>
+      <div class="sidebar-search">
+        <span class="sidebar-search-icon">🔍</span>
+        <input id="sidebar-filter" type="text" placeholder="Buscar equipamento..." autocomplete="off">
+      </div>
+      <div class="sidebar-sep"></div>
+      <div id="sidebar-list"></div>
+    `;
+    document.getElementById('sidebar-filter').addEventListener('input', function() {
+      renderSidebarList(this.value);
+    });
+  }
+  renderSidebarList('');
+}
 
-  const query = currentFilter.toLowerCase().trim();
+function renderSidebarList(filterText) {
+  const query = (filterText || '').toLowerCase().trim();
+  const list  = document.getElementById('sidebar-list');
+  if (!list) return;
+  list.innerHTML = '';
+
   let anyVisible = false;
-
   EQUIPMENTS.forEach((eq, i) => {
     if (query && !eq.name.toLowerCase().includes(query)) return;
     anyVisible = true;
@@ -1034,14 +1023,14 @@ function renderSidebar(filterText) {
         <div class="equip-ct">${eq.items.length} manutenç${eq.items.length !== 1 ? 'ões' : 'ão'}</div>
       </div>`;
     btn.onclick = () => selectEquip(i);
-    sb.appendChild(btn);
+    list.appendChild(btn);
   });
 
   if (!anyVisible) {
     const empty = document.createElement('div');
     empty.style.cssText = 'text-align:center;padding:20px 10px;color:var(--sub);font-size:12px;';
     empty.textContent = 'Nenhum equipamento encontrado';
-    sb.appendChild(empty);
+    list.appendChild(empty);
   }
 }
 
@@ -1050,7 +1039,8 @@ function renderSidebar(filterText) {
 // ════════════════════════════════════════════════════════════
 function selectEquip(idx) {
   activeEq = idx;
-  renderSidebar();
+  const currentFilter = document.getElementById('sidebar-filter') ? document.getElementById('sidebar-filter').value : '';
+  renderSidebarList(currentFilter);
   filtered = [...EQUIPMENTS[idx].items];
   renderMain();
 }
@@ -1090,7 +1080,10 @@ function renderMain() {
   const src     = eq.items;
   const maxH    = Math.max(...src.map(r => r.hor));
   const avgH    = Math.round(src.reduce((a, r) => a + r.hor, 0) / src.length);
-  const abertos = src.filter(r => r.status !== 'Encerrada').length;
+  const abertos = src.filter(r => {
+    const haystack = (r.status + ' ' + r.textoSap + ' ' + r.tipo).toUpperCase();
+    return haystack.includes('LIB') || haystack.includes('ABER');
+  }).length;
   const ultima  = [...src].sort((a,b) => b.data.localeCompare(a.data))[0];
   const tipos   = [...new Set(src.map(r => r.tipo))].sort();
 
@@ -1103,26 +1096,6 @@ function renderMain() {
         <p>Histórico completo de grandes manutenções · ${src.length} registro${src.length !== 1 ? 's' : ''}</p>
       </div>
     </div>
-
-    <!-- Card Última GM Executada -->
-    ${ultima ? `
-    <div class="ultima-gm-card" onclick="openDetail(${ALL_FLAT.findIndex(x => x.ordem === ultima.ordem)})">
-      <div class="ultima-gm-icon">🔧</div>
-      <div class="ultima-gm-info">
-        <div class="ultima-gm-label">Última GM Executada</div>
-        <div class="ultima-gm-tipo">${ultima.tipo}</div>
-        <div class="ultima-gm-meta">
-          <span>📅 ${new Date(ultima.data+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}</span>
-          <span>⏱ <span class="hi">${ultima.hor.toLocaleString('pt-BR')} h</span></span>
-          <span>🆔 OS #${ultima.ordem}</span>
-          <span>👤 ${ultima.frota}</span>
-        </div>
-      </div>
-      <div class="ultima-gm-badge">${(() => {
-        const diff = Math.round((new Date() - new Date(ultima.data+'T12:00:00')) / 86400000);
-        return diff === 0 ? 'Hoje' : diff === 1 ? '1 dia atrás' : diff + ' dias atrás';
-      })()}</div>
-    </div>` : ''}
 
     <!-- KPIs -->
     <div class="kpis">
@@ -1137,9 +1110,9 @@ function renderMain() {
         <div class="kpi-sub">por manutenção</div>
       </div>
       <div class="kpi" style="--kpi-color:var(--green)">
-        <div class="kpi-label">Maior Horímetro</div>
-        <div class="kpi-value">${maxH.toLocaleString('pt-BR')}<span style="font-size:14px;font-weight:400"> h</span></div>
-        <div class="kpi-sub">registrado</div>
+        <div class="kpi-label">Último Horímetro</div>
+        <div class="kpi-value">${ultima ? ultima.hor.toLocaleString('pt-BR') : '—'}<span style="font-size:14px;font-weight:400"> h</span></div>
+        <div class="kpi-sub">na última GM</div>
       </div>
       <div class="kpi" style="--kpi-color:var(--warn)">
         <div class="kpi-label">Em Aberto</div>
@@ -1149,7 +1122,7 @@ function renderMain() {
       <div class="kpi" style="--kpi-color:var(--sub)">
         <div class="kpi-label">Última Execução</div>
         <div class="kpi-value" style="font-size:16px;padding-top:4px">${
-          ultima ? new Date(ultima.data+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'}) : '—'
+          ultima ? fmtDate(ultima.data, {day:'2-digit',month:'short',year:'numeric'}) : '—'
         }</div>
         <div class="kpi-sub">${ultima ? ultima.tipo : '—'}</div>
       </div>
@@ -1205,9 +1178,9 @@ function renderTimeline() {
   wrap.innerHTML = Object.keys(byYear).sort((a,b)=>b-a).map(yr => {
     const items = byYear[yr];
     const rows = items.map((r, i) => {
-      const dt   = new Date(r.data + 'T12:00:00');
-      const day  = dt.toLocaleDateString('pt-BR', { day: '2-digit' });
-      const mon  = dt.toLocaleDateString('pt-BR', { month: 'short' });
+      const dt   = safeDate(r.data);
+      const day  = dt ? dt.toLocaleDateString('pt-BR', { day: '2-digit' }) : '--';
+      const mon  = dt ? dt.toLocaleDateString('pt-BR', { month: 'short' }) : '---';
       const st   = STATUS_CFG[r.status] || STATUS_CFG['Encerrada'];
       const idx  = ALL_FLAT.findIndex(x => x.ordem === r.ordem);
       const last = i === items.length - 1;
@@ -1241,7 +1214,7 @@ function renderTimeline() {
             </div>
             <div>
               <div class="tl-field-label">Data</div>
-              <div class="tl-field-value">${dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}</div>
+              <div class="tl-field-value">${fmtDate(r.data,{day:'2-digit',month:'long',year:'numeric'})}</div>
             </div>
             <div>
               <div class="tl-field-label">Frota</div>
@@ -1269,8 +1242,7 @@ function renderTimeline() {
 function openDetail(idx) {
   const r  = ALL_FLAT[idx];
   const st = STATUS_CFG[r.status] || STATUS_CFG['Encerrada'];
-  const dt = new Date(r.data + 'T12:00:00')
-    .toLocaleDateString('pt-BR', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+  const dt = fmtDate(r.data, { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
 
   document.getElementById('d-kicker').textContent  = 'OS #' + r.ordem;
   document.getElementById('d-title').textContent   = r.tipo;
