@@ -1062,7 +1062,7 @@ function toggleTheme() {
 (function () {
   const s = localStorage.getItem('gm-theme');
   const sys = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  if (s === 'dark' || (!s && sys)) {
+  if (s === 'dark'){
     document.body.classList.add('dark');
     document.getElementById('theme-knob').textContent = '☀️';
   }
