@@ -1361,8 +1361,8 @@ function renderTimeline() {
     const items = byYear[yr];
     const rows = items.map((r, i) => {
       const dt   = safeDate(r.data);
-      const day  = dt ? dt.toLocaleDateString('pt-BR', { day: '2-digit' }) : 'Data Inválida';
-      const mon  = dt ? dt.toLocaleDateString('pt-BR', { month: 'short' }) : 'Data Inválida';
+      const day  = dt ? dt.toLocaleDateString('pt-BR', { day: '2-digit' }) : '--';
+      const mon  = dt ? dt.toLocaleDateString('pt-BR', { month: 'short' }) : '---';
       const st   = STATUS_CFG[r.status] || STATUS_CFG['Encerrada'];
       const idx  = ALL_FLAT.findIndex(x => x.ordem === r.ordem);
       const last = i === items.length - 1;
