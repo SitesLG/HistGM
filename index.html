@@ -1315,7 +1315,7 @@ function renderMain() {
         <div class="kpi-value">${ultima ? ultima.hor.toLocaleString('pt-BR') : '—'}<span style="font-size:14px;font-weight:400"> h</span></div>
         <div class="kpi-sub">na última GM</div>
       </div>
-      <div class="kpi" style="--kpi-color:var(--warn);cursor:pointer;" onclick="filterAbertos()">
+      <div class="kpi" style="--kpi-color:var(--warn);cursor:pointer;" onclick="filterAbertos()" title="Clique para filtrar">
         <div class="kpi-label">Em Aberto</div>
         <div class="kpi-value">${abertos}</div>
         <div class="kpi-sub">pendente${abertos !== 1 ? 's' : ''} / em andamento</div>
