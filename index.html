@@ -1017,10 +1017,16 @@ let filtered   = [];   // registros do eq ativo após filtro
 
 const ICONS = { 'F-FWX': '🚜', 'F-HVE': '🏗️' };
 const STATUS_CFG = {
-  'Encerrada':    { color: 'var(--green)', bg: 'var(--green-bg)', br: 'var(--green-br)', dot: '#38a862' },
-  'Em andamento': { color: 'var(--blue)',  bg: 'var(--blue-bg)',  br: 'var(--blue-br)',  dot: '#4d84cc' },
-  'Pendente':     { color: 'var(--warn)',  bg: 'var(--warn-bg)',  br: 'var(--warn-br)',  dot: '#c49a38' },
+  'LIB':     { color: 'var(--warn)',  bg: 'var(--warn-bg)',  br: 'var(--warn-br)',  dot: '#c49a38' },
+  'ENT':     { color: 'var(--green)', bg: 'var(--green-bg)', br: 'var(--green-br)', dot: '#38a862' },
+  'default': { color: 'var(--blue)',  bg: 'var(--blue-bg)',  br: 'var(--blue-br)',  dot: '#4d84cc' },
 };
+function getStatus(status) {
+  const s = (status || '').toUpperCase();
+  if (s.includes('LIB')) return STATUS_CFG['LIB'];
+  if (s.includes('ENT')) return STATUS_CFG['ENT'];
+  return STATUS_CFG['default'];
+}
 
 // ════════════════════════════════════════════════════════════
 //  HELPER — DATA SEGURA
@@ -1046,8 +1052,10 @@ function fmtDate(dateStr, opts) {
 //  RELÓGIO
 // ════════════════════════════════════════════════════════════
 function tick() {
-  document.getElementById('clock').textContent =
-    new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const agora = new Date();
+agora.setMinutes(0, 0, 0);
+document.getElementById('sync-label').textContent =
+  'Atualizado ' + agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 }
 setInterval(tick, 1000); tick();
 
@@ -1234,9 +1242,20 @@ function clearFilters() {
   renderTimeline();
 }
 
-// ════════════════════════════════════════════════════════════
-//  RENDER MAIN (header + KPIs + filtros + timeline)
-// ════════════════════════════════════════════════════════════
+function filterAbertos() {
+  const src = EQUIPMENTS[activeEq].items;
+  filtered = src.filter(r => {
+    const haystack = (r.status + ' ' + r.textoSap + ' ' + r.tipo).toUpperCase();
+    return haystack.includes('LIB') || haystack.includes('ABER');
+  });
+  // Limpa os filtros visuais para não confundir
+  document.getElementById('fTipo').value    = '';
+  document.getElementById('fDataIni').value = '';
+  document.getElementById('fDataFim').value = '';
+  renderTimeline();
+}
+
+
 function renderMain() {
   const eq      = EQUIPMENTS[activeEq];
   const src     = eq.items;
@@ -1296,7 +1315,7 @@ function renderMain() {
         <div class="kpi-value">${ultima ? ultima.hor.toLocaleString('pt-BR') : '—'}<span style="font-size:14px;font-weight:400"> h</span></div>
         <div class="kpi-sub">na última GM</div>
       </div>
-      <div class="kpi" style="--kpi-color:var(--warn)">
+      <div class="kpi" style="--kpi-color:var(--warn);cursor:pointer;" onclick="filterAbertos()">
         <div class="kpi-label">Em Aberto</div>
         <div class="kpi-value">${abertos}</div>
         <div class="kpi-sub">pendente${abertos !== 1 ? 's' : ''} / em andamento</div>
@@ -1363,7 +1382,7 @@ function renderTimeline() {
       const dt   = safeDate(r.data);
       const day  = dt ? dt.toLocaleDateString('pt-BR', { day: '2-digit' }) : 'Data Inválida';
       const mon  = dt ? dt.toLocaleDateString('pt-BR', { month: 'short' }) : 'Data Inválida';
-      const st   = STATUS_CFG[r.status] || STATUS_CFG['Encerrada'];
+      const st   = getStatus(r.status);
       const idx  = ALL_FLAT.findIndex(x => x.ordem === r.ordem);
       const last = i === items.length - 1;
 
@@ -1423,7 +1442,7 @@ function renderTimeline() {
 // ════════════════════════════════════════════════════════════
 function openDetail(idx) {
   const r  = ALL_FLAT[idx];
-  const st = STATUS_CFG[r.status] || STATUS_CFG['Encerrada'];
+  const st = getStatus(r.status);
   const dt = fmtDate(r.data, { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
 
   document.getElementById('d-kicker').textContent  = 'OS #' + r.ordem;
